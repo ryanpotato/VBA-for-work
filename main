@@ -1,0 +1,144 @@
+Option Explicit
+
+Sub Macro1()
+'
+' Macro1 Macro
+'
+
+' declare variables
+
+Dim mycount As Integer
+mycount = 0
+Dim i As Integer
+Dim First As Range
+Set First = Range("A2")
+Dim LastCell As Range
+Set LastCell = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell)
+
+
+' delete easy first Rs and Cs
+Range("A1:A5").EntireRow.Delete
+Range("B:D,G:H").Delete
+
+' prepare loops
+Set LastCell = LastCell.End(xlToLeft)
+Set LastCell = LastCell.End(xlToLeft)
+Set LastCell = LastCell.End(xlToLeft)
+Set First = Range("A2")
+mycount = Range(First, LastCell).Cells.Count
+MsgBox ("Mycount Is " & mycount)
+First.Select
+For i = 1 To mycount
+
+' get names aligned
+
+If ActiveCell.Font.Bold = False And InStr(ActiveCell.Value, "(") <> 0 And ActiveCell.Offset(0, 1) = "" Then
+        'code for string to cut and paste
+        ActiveCell.Cut
+        ActiveCell.Offset(2).Select
+Repeater:
+        ActiveSheet.Paste
+        If ActiveCell.Offset(1, 1) <> "" Then
+        ActiveCell.Offset(0, 1).Select
+        GoTo Repeater
+    
+    Else
+    ' code to move to next
+        ActiveCell.Offset(0, 1).Select
+End If
+
+Next i
+
+
+'Do While First.Value <> Empty
+'    If InStr(First.Value, "Total") = 0 Then
+'        MsgBox (First.Address & " Is " & First)
+'        Set First = First.Offset(1)
+'        First.Select
+'    Else
+
+
+
+' re-set loop
+First.Select
+For i = 1 To mycount
+
+'delete blanks if both C1 and C2 are ""
+If ActiveCell = "" Then
+    If ActiveCell.Offset(0, 1) = "" Then
+        ActiveCell.EntireRow.Delete
+    End If
+Else
+    
+    ActiveCell.Offset(1).Select
+End If
+Next i
+
+
+
+
+
+LastCell.Select
+
+
+'Do While First.Value <> Empty
+'    If First.Font.Bold Then
+'        MsgBox ("Cell is bold")
+'        Set First = First.Offset(1)
+'        First.Select
+'    Else
+'        MsgBox ("Not Bold")
+'        Set First = First.Offset(1)
+'        First.Select
+'    End If
+'Loop
+
+'
+'
+'Do While First.Value <> Empty
+'    If InStr(First.Value, "Total") = 0 Then
+'        MsgBox (First.Address & " Is " & First)
+'        Set First = First.Offset(1)
+'        First.Select
+'    Else
+'        MsgBox ("Total in it")
+'        Set First = First.Offset(1)
+'        First.Select
+'    End If
+'Loop
+
+
+    
+    'Selection.EntireRow.Delete
+'    Range("B:D,G:H").Select
+'    Range("G1").Activate
+'    Selection.Delete Shift:=xlToLeft
+'    Range("A1").Select
+End Sub
+
+'Dim RegP As Object
+'Set RegP = CreateObject("VBScript.RegExp")
+'regex playing
+'With RegP
+'    .Pattern = "(..)"
+'End With
+Sub Macro3()
+'
+' Macro3 Macro
+'
+
+'
+    Selection.Cut
+    Range("E9").Select
+    ActiveSheet.Paste
+    Sheets("original").Select
+    ActiveWindow.SmallScroll Down:=-30
+    Sheets("original").Select
+    ActiveWindow.SmallScroll Down:=-39
+    Sheets("original (5)").Select
+    Sheets("original (5)").Name = "original (5)"
+    Range("A21").Select
+    Sheets("original (5)").Select
+    Sheets("original (5)").Copy Before:=Sheets(1)
+    Range("F16").Select
+End Sub
