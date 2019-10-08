@@ -4,7 +4,7 @@ Sub Macro1()
 '
 ' Macro1 Macro
 '
-Application.ScreenUpdating = True
+Application.ScreenUpdating = False
 
 ' declare variables
 Dim mycount As Integer
@@ -16,8 +16,8 @@ Dim LastCell As Range
 Set LastCell = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell)
 
 ' delete easy first Rs and Cs
-'Range("A1:A5").EntireRow.Delete
-'Range("B:D,G:H").Delete
+Range("A1:A5").EntireRow.Delete
+Range("B:D,G:H").Delete
 
 ' prepare loops
 Set LastCell = LastCell.End(xlToLeft)
@@ -26,10 +26,9 @@ Set LastCell = LastCell.End(xlToLeft)
 Set First = Range("A2")
 mycount = Range(First, LastCell).Cells.Count
 First.Select
-GoTo tempstart
+'GoTo tempstart
 
 For i = 1 To mycount
-
 ' get names aligned
 If ActiveCell.Font.Bold = False And InStr(ActiveCell.Value, "(") <> 0 And ActiveCell.Offset(0, 1) = "" Then
            
@@ -39,7 +38,6 @@ If ActiveCell.Font.Bold = False And InStr(ActiveCell.Value, "(") <> 0 And Active
     ' deal with special case in Practice Management report formatting.
     'TODO make sure this is completely general - i.e. covers all cases
     If InStr(ActiveCell.Offset(3, 0).Value, "Office ") <> 0 Then
-        
         ActiveCell.Offset(1).Select
     Else
         ActiveCell.Offset(2).Select
@@ -62,19 +60,11 @@ End If
 Next i
 
 tempstart:
-'Do While First.Value <> Empty
-'    If InStr(First.Value, "Total") = 0 Then
-'        MsgBox (First.Address & " Is " & First)
-'        Set First = First.Offset(1)
-'        First.Select
-'    Else
-
-' Delete unwanted rows to create table for pivoting
-
-' re-set loop
-
 For i = 1 To mycount
-    'delete blanks if both C1 and C2 are ""
+    If ActiveCell.Row > LastRow.Row Then
+    Next i
+    
+    'delete unwanted rows
     If (ActiveCell = "" And ActiveCell.Offset(0, 1) = "") Or (ActiveCell.Font.Bold = True And InStr(ActiveCell.Value, "Totals") = 0) Then
 Again:
         ActiveCell.EntireRow.Delete
@@ -83,47 +73,11 @@ Again:
         End If
     End If
     ActiveCell.Offset(1).Select
-    
 Next i
+Range("A1").Select
 
-LastCell.Select
-
-
-'Do While First.Value <> Empty
-'    If First.Font.Bold Then
-'        MsgBox ("Cell is bold")
-'        Set First = First.Offset(1)
-'        First.Select
-'    Else
-'        MsgBox ("Not Bold")
-'        Set First = First.Offset(1)
-'        First.Select
-'    End If
-'Loop
-
-'
-'
-'Do While First.Value <> Empty
-'    If InStr(First.Value, "Total") = 0 Then
-'        MsgBox (First.Address & " Is " & First)
-'        Set First = First.Offset(1)
-'        First.Select
-'    Else
-'        MsgBox ("Total in it")
-'        Set First = First.Offset(1)
-'        First.Select
-'    End If
-'Loop
-
-
-    
-    'Selection.EntireRow.Delete
-'    Range("B:D,G:H").Select
-'    Range("G1").Activate
-'    Selection.Delete Shift:=xlToLeft
-'    Range("A1").Select
-Application.ScreenUpdating = False
-
+Application.ScreenUpdating = True
+MsgBox ("Have a nice day")
 End Sub
 
  
