@@ -5,8 +5,8 @@ Sub Macro1()
 ' Macro1 Macro
 '
 Application.ScreenUpdating = True
-' declare variables
 
+' declare variables
 Dim mycount As Integer
 mycount = 0
 Dim i As Integer
@@ -14,8 +14,6 @@ Dim First As Range
 Set First = Range("A2")
 Dim LastCell As Range
 Set LastCell = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell)
-
-
 
 ' delete easy first Rs and Cs
 'Range("A1:A5").EntireRow.Delete
@@ -27,21 +25,21 @@ Set LastCell = LastCell.End(xlToLeft)
 Set LastCell = LastCell.End(xlToLeft)
 Set First = Range("A2")
 mycount = Range(First, LastCell).Cells.Count
-'MsgBox ("Mycount Is " & mycount)
 First.Select
+GoTo tempstart
+
 For i = 1 To mycount
 
 ' get names aligned
-
 If ActiveCell.Font.Bold = False And InStr(ActiveCell.Value, "(") <> 0 And ActiveCell.Offset(0, 1) = "" Then
-            
+           
+    'code for string to cut and paste
     ActiveCell.Cut
     
     ' deal with special case in Practice Management report formatting.
     'TODO make sure this is completely general - i.e. covers all cases
     If InStr(ActiveCell.Offset(3, 0).Value, "Office ") <> 0 Then
         
-        'code for string to cut and paste
         ActiveCell.Offset(1).Select
     Else
         ActiveCell.Offset(2).Select
@@ -63,7 +61,7 @@ End If
 
 Next i
 
-
+tempstart:
 'Do While First.Value <> Empty
 '    If InStr(First.Value, "Total") = 0 Then
 '        MsgBox (First.Address & " Is " & First)
@@ -71,26 +69,22 @@ Next i
 '        First.Select
 '    Else
 
-
+' Delete unwanted rows to create table for pivoting
 
 ' re-set loop
-First.Select
+
 For i = 1 To mycount
-
-'delete blanks if both C1 and C2 are ""
-If ActiveCell = "" Then
-    If ActiveCell.Offset(0, 1) = "" Then
+    'delete blanks if both C1 and C2 are ""
+    If (ActiveCell = "" And ActiveCell.Offset(0, 1) = "") Or (ActiveCell.Font.Bold = True And InStr(ActiveCell.Value, "Totals") = 0) Then
+Again:
         ActiveCell.EntireRow.Delete
+        If (ActiveCell = "" And ActiveCell.Offset(0, 1) = "") Or (ActiveCell.Font.Bold = True And InStr(ActiveCell.Value, "Totals") = 0) Then
+            GoTo Again
+        End If
     End If
-Else
-    
     ActiveCell.Offset(1).Select
-End If
+    
 Next i
-
-
-
-
 
 LastCell.Select
 
