@@ -39,12 +39,13 @@ If ActiveCell.Font.Bold = False And InStr(ActiveCell.Value, "(") <> 0 And Active
 Repeater:
         ActiveSheet.Paste
         If ActiveCell.Offset(1, 1) <> "" Then
-        ActiveCell.Offset(0, 1).Select
-        GoTo Repeater
+            ActiveCell.Offset(0, 1).Select
+            GoTo Repeater
     
-    Else
-    ' code to move to next
-        ActiveCell.Offset(0, 1).Select
+        Else
+        ' code to move to next
+            ActiveCell.Offset(0, 1).Select
+        End If
 End If
 
 Next i
@@ -140,5 +141,18 @@ Sub Macro3()
     Range("A21").Select
     Sheets("original (5)").Select
     Sheets("original (5)").Copy Before:=Sheets(1)
-    Range("F16").Select
+    Range("H5").Select
+    ActiveWindow.SmallScroll Down:=-30
+    Sheets("original (5)").Select
+    ActiveWindow.SmallScroll Down:=-15
+    Sheets("original (4)").Select
+    Sheets("original (4)").Copy Before:=Sheets(8)
+    Sheets("original (7)").Select
+    Sheets("original (7)").Move Before:=Sheets(2)
+    ActiveWindow.ScrollWorkbookTabs Sheets:=-1
+    Sheets("original (6)").Select
+    ActiveWindow.SelectedSheets.Delete
+    Sheets("original (5)").Select
+    ActiveWindow.SelectedSheets.Delete
+    Sheets("original (7)").Select
 End Sub
