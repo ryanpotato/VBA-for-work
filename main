@@ -4,7 +4,7 @@ Sub Macro1()
 '
 ' Macro1 Macro
 '
-Application.ScreenUpdating = False
+Application.ScreenUpdating = True
 
 ' declare variables
 Dim mycount As Integer
@@ -59,10 +59,14 @@ End If
 
 Next i
 
+'go back to startcell
+First.Select
+
 tempstart:
 For i = 1 To mycount
-    If ActiveCell.Row > LastRow.Row Then
-    Next i
+    If ActiveCell.Row > LastCell.Row Then
+    GoTo NextIteration
+    End If
     
     'delete unwanted rows
     If (ActiveCell = "" And ActiveCell.Offset(0, 1) = "") Or (ActiveCell.Font.Bold = True And InStr(ActiveCell.Value, "Totals") = 0) Then
@@ -73,11 +77,10 @@ Again:
         End If
     End If
     ActiveCell.Offset(1).Select
+NextIteration:
 Next i
 Range("A1").Select
 
 Application.ScreenUpdating = True
 MsgBox ("Have a nice day")
 End Sub
-
- 
