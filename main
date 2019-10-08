@@ -17,8 +17,8 @@ Set LastCell = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell)
 
 
 ' delete easy first Rs and Cs
-Range("A1:A5").EntireRow.Delete
-Range("B:D,G:H").Delete
+'Range("A1:A5").EntireRow.Delete
+'Range("B:D,G:H").Delete
 
 ' prepare loops
 Set LastCell = LastCell.End(xlToLeft)
@@ -47,7 +47,7 @@ Repeater:
             ActiveCell.Offset(0, 1).Select
         End If
 Else
-ActiveCell.Offset(0, 1).Select
+ActiveCell.Offset(1, 0).Select
 End If
 
 Next i
