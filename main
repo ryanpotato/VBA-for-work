@@ -89,12 +89,86 @@ End Sub
 
 
 Sub mymessage()
-
 MsgBox ("Have a nice day")
 
 End Sub
 
 
 Sub OpenTemplateWorkbook()
+Dim path As String
+path = "C:\Users\gcr\Documents\Clients\DSB\Elaine\WIP macro project\Root\T.xlsx"
+
+Workbooks.Open (path)
+Range("A1").Select
+
+End Sub
+
+Sub MakePivot()
+
+'' Code below from source https://excelchamps.com/blog/vba-to-create-pivot-table/
+'' Copyright by them as template if they have any, else just credit where due
+
+'Declare Variables
+Dim PSheet As Worksheet
+Dim DSheet As Worksheet
+Dim PCache As PivotCache
+Dim PTable As PivotTable
+Dim PRange As Range
+Dim LastRow As Long
+Dim LastCol As Long
+
+'create new Worksheet
+On Error Resume Next
+Application.DisplayAlerts = False
+Sheets.Add After:=ActiveSheet
+ActiveSheet.Name = "PivotTable"
+Application.DisplayAlerts = True
+Set PSheet = Worksheets("PivotTable")
+Set DSheet = Worksheets("Report")
+
+
+'Define Data Range
+LastRow = DSheet.Cells(Rows.Count, 1).End(xlUp).Row
+LastCol = DSheet.Cells(1, Columns.Count).End(xlToLeft).Column
+Set PRange = DSheet.Cells(1, 1).Resize(LastRow, LastCol)
+
+
+'Define Pivot Cache
+Set PCache = ActiveWorkbook.PivotCaches.Create _
+(SourceType:=xlDatabase, SourceData:=PRange). _
+CreatePivotTable(TableDestination:=PSheet.Cells(5, 2), _
+TableName:="TimeUsage")
+
+
+'Insert Blank Pivot Table
+Set PTable = PCache.CreatePivotTable _
+(TableDestination:=PSheet.Cells(1, 1), TableName:="TimeUsage")
+
+
+'Insert Row Fields
+With ActiveSheet.PivotTables("TimeUsage").PivotFields("Service Description")
+    .Orientation = xlRowField
+    .Position = 1
+End With
+
+'Insert Column Fields
+With ActiveSheet.PivotTables("TimeUsage").PivotFields("Employee Name (Number)")
+    .Orientation = xlColumnField
+    .Position = 1
+End With
+
+'Insert Data Field
+With ActiveSheet.PivotTables("TimeUsage").PivotFields("Sum of Bill Hrs")
+    .Orientation = xlDataField
+    .Position = 1
+    .Function = xlSum
+    .NumberFormat = "#,##0"
+    .Name = "TODO Set Name in Code "
+End With
+
+'Format Pivot
+TableActiveSheet.PivotTables("TimeUsage").ShowTableStyleRowStripes _
+= TrueActiveSheet.PivotTables("TimeUsage").TableStyle2 = "PivotStyleMedium9"
+
 
 End Sub
