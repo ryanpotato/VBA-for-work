@@ -109,8 +109,6 @@ MyArray(2) = "Budget to Actual"
 MyArray(3) = "PY to CY"
 Dim i As Integer
 
-
-
 ActiveSheet.range("A1").Select
 Selection.End(xlDown).End(xlDown).Select
 LRowNum = ActiveCell.Row
@@ -244,30 +242,3 @@ MyDocsPath = VBA.Environ$("USERPROFILE")
 MsgBox (MyDocsPath)
    
 End Function
-
-
-
-
-Sub range()
-'
-' range Macro
-'
-
-'
-    ActiveCell.range("A1:B3").Select
-End Sub
-
-Sub Macro9()
-'
-' Macro9 Macro
-'
-
-'
-    ActiveCell.Offset(-5, 5).range("A1").Select
-    ActiveCell.FormulaR1C1 = _
-        "=RC[-2]-GETPIVOTDATA(""Bill Hrs"",R5C1,""Service Description"",""401 Other General Procedures"")"
-    ActiveCell.Offset(0, 1).range("A1").Select
-    ActiveCell.FormulaR1C1 = _
-        "=RC[-2]-GETPIVOTDATA(""Bill Hrs"",R5C1,""Service Description"",""401 Other General Procedures"")"
-    ActiveCell.Offset(1, 0).range("A1").Select
-End Sub
