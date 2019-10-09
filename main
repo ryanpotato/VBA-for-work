@@ -8,14 +8,14 @@ Sub Macro1()
 Dim mycount As Integer
 mycount = 0
 Dim i As Integer
-Dim First As Range
-Set First = Range("A2")
-Dim LastCell As Range
+Dim First As range
+Set First = range("A2")
+Dim LastCell As range
 Set LastCell = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell)
 Dim ClientName As String
-ClientName = Range("C10").FormulaR1C1
+ClientName = range("C10").FormulaR1C1
 Dim BillPeriod As String
-BillPeriod = Right(Range("A4").FormulaR1C1, Len(Range("A4").FormulaR1C1) - 5)
+BillPeriod = Right(range("A4").FormulaR1C1, Len(range("A4").FormulaR1C1) - 5)
 
 
 'make sure pivot table doesn't exist
@@ -26,15 +26,15 @@ End If
 Application.ScreenUpdating = False
 
 ' delete easy first Rs and Cs
-Range("A1:A5").EntireRow.Delete
-Range("B:D,G:H").Delete
+range("A1:A5").EntireRow.Delete
+range("B:D,G:H").Delete
 
 ' prepare loops
 Set LastCell = LastCell.End(xlToLeft)
 Set LastCell = LastCell.End(xlToLeft)
 Set LastCell = LastCell.End(xlToLeft)
-Set First = Range("A2")
-mycount = Range(First, LastCell).Cells.Count
+Set First = range("A2")
+mycount = range(First, LastCell).Cells.Count
 First.Select
 'GoTo tempstart
 
@@ -89,7 +89,7 @@ Again:
     ActiveCell.Offset(1).Select
 NextIteration:
 Next i
-Range("A1").Select
+range("A1").Select
 MakePivot
 AddUsercells
 'SaveWorkbook
@@ -100,7 +100,9 @@ End Sub
 
 Sub AddUsercells()
 Dim FRowNum As Integer
+Dim LRowNum As Integer
 Dim MyArray(3) As String
+Dim TimesToShade As Integer
 MyArray(0) = "Budget"
 MyArray(1) = "Prior Year"
 MyArray(2) = "Budget to Actual"
@@ -108,10 +110,13 @@ MyArray(3) = "PY to CY"
 Dim i As Integer
 
 
-ActiveSheet.Range("A1").Select
-Selection.End(xlDown).Select
-ActiveCell.Offset(1, 1).Select
+ActiveSheet.range("A1").Select
+Selection.End(xlDown).End(xlDown).Select
+LRowNum = ActiveCell.Row
+Selection.End(xlUp).Select
 FRowNum = ActiveCell.Row
+TimesToShade = LRowNum - FRowNum - 2
+ActiveCell.Offset(1, 1).Select
 ActiveCell.End(xlToRight).Select
 ActiveCell.Offset(0, 1).Select
 For i = 0 To 3
@@ -121,8 +126,8 @@ For i = 0 To 3
     Selection.HorizontalAlignment = xlCenter
     ActiveCell.Offset(0, 1).Select
 Next i
-
 ActiveCell.Offset(1, -4).Select
+ActiveCell.range("A1:B" & CStr(TimesToShade)).Select
 Selection.Interior.Color = 65535
 
 End Sub
@@ -138,7 +143,7 @@ Dim path As String
 path = "C:\Users\gcr\Documents\Clients\DSB\Elaine\WIP macro project\Root\T.xlsx"
 
 Workbooks.Open (path)
-Range("A1").Select
+range("A1").Select
 
 End Sub
 
@@ -157,7 +162,7 @@ Dim PSheet As Worksheet
 Dim DSheet As Worksheet
 Dim PCache As PivotCache
 Dim PTable As PivotTable
-Dim PRange As Range
+Dim PRange As range
 Dim LastRow As Long
 Dim LastCol As Long
 
@@ -228,18 +233,27 @@ MyDocsPath = VBA.Environ$(“USERPROFILE”)
 MsgBox (MyDocsPath)
    
 End Function
-    Range("L18").Select
-    Range("I11").Select
-    Range("L6:O7").Select
+    range("L18").Select
+    range("I11").Select
+    range("L6:O7").Select
     Selection.ClearContents
     With Selection.Interior
         .Pattern = xlNone
         .TintAndShade = 0
         .PatternTintAndShade = 0
     End With
-    Range("K7").Select
+    range("K7").Select
     With Selection.Interior
         .Pattern = xlNone
         .TintAndShade = 0
         .PatternTintAndShade = 0
     End With
+
+Sub range()
+'
+' range Macro
+'
+
+'
+    ActiveCell.range("A1:B3").Select
+End Sub
