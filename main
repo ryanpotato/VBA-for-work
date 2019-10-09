@@ -12,6 +12,13 @@ Dim First As Range
 Set First = Range("A2")
 Dim LastCell As Range
 Set LastCell = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell)
+Dim ClientName As String
+ClientName = Range("C10").FormulaR1C1
+Dim BillPeriod As String
+BillPeriod = Right(Range("A4").FormulaR1C1, Len(Range("A4").FormulaR1C1) - 5)
+MsgBox (BillPeriod)
+
+
 
 'make sure pivot table doesn't exist
 If WorksheetExists("PivotTable") Then
