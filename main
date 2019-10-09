@@ -1,9 +1,8 @@
 Option Explicit
 
-Sub Macro1()
-'
-' Macro1 Macro
-'
+Sub main()
+' Creates neat clean pivot table from Practice Management Reports
+
 ' declare variables
 Dim mycount As Integer
 mycount = 0
@@ -17,13 +16,16 @@ ClientName = range("C10").FormulaR1C1
 Dim BillPeriod As String
 BillPeriod = Right(range("A4").FormulaR1C1, Len(range("A4").FormulaR1C1) - 5)
 
-
-'make sure pivot table doesn't exist
+'make sure pivot table sheet doesn't already exist
 If WorksheetExists("PivotTable") Then
 Exit Sub
 End If
 
 Application.ScreenUpdating = False
+
+'TODO consider moving to this sub as refactor (first get to green)
+FormatTable
+
 
 ' delete easy first Rs and Cs
 range("A1:A5").EntireRow.Delete
@@ -42,7 +44,7 @@ For i = 1 To mycount
 ' get names aligned
 If ActiveCell.Font.Bold = False And InStr(ActiveCell.Value, "(") <> 0 And ActiveCell.Offset(0, 1) = "" Then
            
-    'code for string to cut and paste
+    'code for string to cut and paste names alongside data
     ActiveCell.Cut
     
     ' deal with special case in Practice Management report formatting.
@@ -78,7 +80,7 @@ For i = 1 To mycount
     GoTo NextIteration
     End If
     
-    'delete unwanted rows
+    'Now delete all unwanted rows
     If (ActiveCell = "" And ActiveCell.Offset(0, 1) = "") Or (ActiveCell.Font.Bold = True And InStr(ActiveCell.Value, "Totals") = 0) Then
 Again:
         ActiveCell.EntireRow.Delete
@@ -90,12 +92,24 @@ Again:
 NextIteration:
 Next i
 range("A1").Select
+
+' make the pivot table on a second worksheet
 MakePivot
+
+' add the users custom cells to the pivot on that worksheet
 AddUsercells
-'SaveWorkbook
+
+'Save the Workbook in selected directory
+'TODO Get this working
+'SaveWorkbook (ClientName)
+
+'wish them well
 mymessage
 
 Application.ScreenUpdating = True
+End Sub
+Sub FormatTable()
+'consider placing formatting portion of main in format table. consider how the variables will work
 End Sub
 
 Sub AddUsercells()
@@ -152,18 +166,18 @@ End Sub
 
 
 Sub OpenTemplateWorkbook()
-Dim path As String
-path = "C:\Users\gcr\Documents\Clients\DSB\Elaine\WIP macro project\Root\T.xlsx"
-
-Workbooks.Open (path)
-range("A1").Select
+'' not going to use this approach. abandoned
+'Dim path As String
+'path = "C:\Users\gcr\Documents\Clients\DSB\Elaine\WIP macro project\Root\T.xlsx"
+'
+'Workbooks.Open (path)
+'range("A1").Select
 
 End Sub
 
 Function WorksheetExists(sName As String) As Boolean
     WorksheetExists = Evaluate("ISREF('" & sName & "'!A1)")
 End Function
-
 
 Sub MakePivot()
 
@@ -234,16 +248,18 @@ End With
 ActiveSheet.Cells.ColumnWidth = 9.8
 
 End Sub
-
-Sub SaveWorkbook()
-ActiveWorkbook.Save
+Sub firesaveworkbook()
+SaveWorkbook
+End Sub
+''TODO Get this working
+Sub SaveWorkbook(Optional filename As String)
+Dim pathtosave As String
+pathtosave = MyDocsPath & "\MyDocuments\ClientWip\excellent" & filename
+ActiveWorkbook.SaveAs (pathtosave)
 End Sub
 
 
 Public Function MyDocsPath() As String
-   
 MyDocsPath = VBA.Environ$("USERPROFILE")
-MsgBox (MyDocsPath)
-   
 End Function
 
