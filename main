@@ -137,7 +137,11 @@ For i = 0 To TimesToDo
      ActiveCell.Formula = "=" & ActiveCell.Offset(0, -2).Address & "-" & ActiveCell.Offset(0, -4).Address
      ActiveCell.Offset(1, -1).range("A1").Select
 Next i
-'Selection.FormulaR1C1 =
+Selection.Offset(-1, -2).Select
+For i = 0 To 1
+    ActiveCell.Formula = "=SUM(R[-" & CStr(TimesToDo) & "]C:R[-1]C)"
+    ActiveCell.Offset(0, 1).range("A1").Select
+Next i
 
 End Sub
 
@@ -242,3 +246,4 @@ MyDocsPath = VBA.Environ$("USERPROFILE")
 MsgBox (MyDocsPath)
    
 End Function
+
