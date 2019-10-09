@@ -102,7 +102,7 @@ Sub AddUsercells()
 Dim FRowNum As Integer
 Dim LRowNum As Integer
 Dim MyArray(3) As String
-Dim TimesToShade As Integer
+Dim TimesToDo As Integer
 MyArray(0) = "Budget"
 MyArray(1) = "Prior Year"
 MyArray(2) = "Budget to Actual"
@@ -110,25 +110,36 @@ MyArray(3) = "PY to CY"
 Dim i As Integer
 
 
+
 ActiveSheet.range("A1").Select
 Selection.End(xlDown).End(xlDown).Select
 LRowNum = ActiveCell.Row
 Selection.End(xlUp).Select
 FRowNum = ActiveCell.Row
-TimesToShade = LRowNum - FRowNum - 2
+TimesToDo = LRowNum - FRowNum - 2
 ActiveCell.Offset(1, 1).Select
 ActiveCell.End(xlToRight).Select
 ActiveCell.Offset(0, 1).Select
 For i = 0 To 3
-    
     Selection.FormulaR1C1 = MyArray(i) ' "Budget"
     Selection.Font.Bold = True
     Selection.HorizontalAlignment = xlCenter
     ActiveCell.Offset(0, 1).Select
 Next i
+
+'shade yeller
 ActiveCell.Offset(1, -4).Select
-ActiveCell.range("A1:B" & CStr(TimesToShade)).Select
+ActiveCell.range("A1:B" & CStr(TimesToDo)).Select
 Selection.Interior.Color = 65535
+ActiveCell.Offset(0, 2).Select
+
+For i = 0 To TimesToDo
+     ActiveCell.Formula = "=" & ActiveCell.Offset(0, -2).Address & "-" & ActiveCell.Offset(0, -3).Address
+     ActiveCell.Offset(0, 1).Select
+     ActiveCell.Formula = "=" & ActiveCell.Offset(0, -2).Address & "-" & ActiveCell.Offset(0, -4).Address
+     ActiveCell.Offset(1, -1).range("A1").Select
+Next i
+'Selection.FormulaR1C1 =
 
 End Sub
 
@@ -229,10 +240,12 @@ End Sub
 
 Public Function MyDocsPath() As String
    
-MyDocsPath = VBA.Environ$(“USERPROFILE”)
+MyDocsPath = VBA.Environ$("USERPROFILE")
 MsgBox (MyDocsPath)
    
 End Function
+
+
 
 
 Sub range()
@@ -242,4 +255,19 @@ Sub range()
 
 '
     ActiveCell.range("A1:B3").Select
+End Sub
+
+Sub Macro9()
+'
+' Macro9 Macro
+'
+
+'
+    ActiveCell.Offset(-5, 5).range("A1").Select
+    ActiveCell.FormulaR1C1 = _
+        "=RC[-2]-GETPIVOTDATA(""Bill Hrs"",R5C1,""Service Description"",""401 Other General Procedures"")"
+    ActiveCell.Offset(0, 1).range("A1").Select
+    ActiveCell.FormulaR1C1 = _
+        "=RC[-2]-GETPIVOTDATA(""Bill Hrs"",R5C1,""Service Description"",""401 Other General Procedures"")"
+    ActiveCell.Offset(1, 0).range("A1").Select
 End Sub
