@@ -81,10 +81,10 @@ Again:
 NextIteration:
 Next i
 Range("A1").Select
-
-Application.ScreenUpdating = True
-'MsgBox ("Have a nice day")
+MakePivot
 mymessage
+Application.ScreenUpdating = True
+
 End Sub
 
 
@@ -130,7 +130,7 @@ Set DSheet = Worksheets("Report")
 'Define Data Range
 LastRow = DSheet.Cells(Rows.Count, 1).End(xlUp).Row
 LastCol = DSheet.Cells(1, Columns.Count).End(xlToLeft).Column
-Set PRange = DSheet.Cells(1, 1).Resize(LastRow, LastCol)
+Set PRange = DSheet.Cells(1, 1).Resize(LastRow - 1, LastCol)
 
 
 'Define Pivot Cache
@@ -171,31 +171,33 @@ End With
 '' TODO Figure out what it does and if is necessary
 'TableActiveSheet.PivotTables("TimeUsage").ShowTableStyleRowStripes _
 '= TrueActiveSheet.PivotTables("TimeUsage").TableStyle2 = "PivotStyleMedium9"
-
+ActiveSheet.Cells.ColumnWidth = 9.8
 
 End Sub
-Sub makepivottablerecording()
-'
-' makepivottablerecording Macro
-'
 
 
-    Sheets.Add
-    ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
-        "ptgood (3)!R1C1:R17C4", Version:=6).CreatePivotTable TableDestination:= _
-        "Sheet3!R3C1", TableName:="PivotTable1", DefaultVersion:=6
-    Sheets("Sheet3").Select
-    Cells(3, 1).Select
-    ActiveWorkbook.ShowPivotTableFieldList = True
-    With ActiveSheet.PivotTables("PivotTable1").PivotFields( _
-        "Employee Name (Number)")
-        .Orientation = xlColumnField
-        .Position = 1
-    End With
-    With ActiveSheet.PivotTables("PivotTable1").PivotFields("Service Description")
-        .Orientation = xlRowField
-        .Position = 1
-    End With
-    ActiveSheet.PivotTables("PivotTable1").AddDataField ActiveSheet.PivotTables( _
-        "PivotTable1").PivotFields("Bill Hrs"), "Sum of Bill Hrs", xlSum
-End Sub
+'Sub makepivottablerecording()
+''
+'' makepivottablerecording Macro
+''
+'
+'
+'    Sheets.Add
+'    ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
+'        "ptgood (3)!R1C1:R17C4", Version:=6).CreatePivotTable TableDestination:= _
+'        "Sheet3!R3C1", TableName:="PivotTable1", DefaultVersion:=6
+'    Sheets("Sheet3").Select
+'    Cells(3, 1).Select
+'    ActiveWorkbook.ShowPivotTableFieldList = True
+'    With ActiveSheet.PivotTables("PivotTable1").PivotFields( _
+'        "Employee Name (Number)")
+'        .Orientation = xlColumnField
+'        .Position = 1
+'    End With
+'    With ActiveSheet.PivotTables("PivotTable1").PivotFields("Service Description")
+'        .Orientation = xlRowField
+'        .Position = 1
+'    End With
+'    ActiveSheet.PivotTables("PivotTable1").AddDataField ActiveSheet.PivotTables( _
+'        "PivotTable1").PivotFields("Bill Hrs"), "Sum of Bill Hrs", xlSum
+'End Sub
