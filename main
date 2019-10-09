@@ -158,17 +158,44 @@ With ActiveSheet.PivotTables("TimeUsage").PivotFields("Employee Name (Number)")
 End With
 
 'Insert Data Field
-With ActiveSheet.PivotTables("TimeUsage").PivotFields("Sum of Bill Hrs")
+With ActiveSheet.PivotTables("TimeUsage").PivotFields("Bill Hrs")
     .Orientation = xlDataField
     .Position = 1
     .Function = xlSum
-    .NumberFormat = "#,##0"
-    .Name = "TODO Set Name in Code "
+    ''' TODO try toggling this to see what happens
+    '.NumberFormat = "#,##0"
+    .Name = "Sum of Bill Hours"
 End With
 
 'Format Pivot
-TableActiveSheet.PivotTables("TimeUsage").ShowTableStyleRowStripes _
-= TrueActiveSheet.PivotTables("TimeUsage").TableStyle2 = "PivotStyleMedium9"
+'' TODO Figure out what it does and if is necessary
+'TableActiveSheet.PivotTables("TimeUsage").ShowTableStyleRowStripes _
+'= TrueActiveSheet.PivotTables("TimeUsage").TableStyle2 = "PivotStyleMedium9"
 
 
+End Sub
+Sub makepivottablerecording()
+'
+' makepivottablerecording Macro
+'
+
+
+    Sheets.Add
+    ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
+        "ptgood (3)!R1C1:R17C4", Version:=6).CreatePivotTable TableDestination:= _
+        "Sheet3!R3C1", TableName:="PivotTable1", DefaultVersion:=6
+    Sheets("Sheet3").Select
+    Cells(3, 1).Select
+    ActiveWorkbook.ShowPivotTableFieldList = True
+    With ActiveSheet.PivotTables("PivotTable1").PivotFields( _
+        "Employee Name (Number)")
+        .Orientation = xlColumnField
+        .Position = 1
+    End With
+    With ActiveSheet.PivotTables("PivotTable1").PivotFields("Service Description")
+        .Orientation = xlRowField
+        .Position = 1
+    End With
+    ActiveSheet.PivotTables("PivotTable1").AddDataField ActiveSheet.PivotTables( _
+        "PivotTable1").PivotFields("Bill Hrs"), "Sum of Bill Hrs", xlSum
 End Sub
