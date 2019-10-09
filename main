@@ -4,7 +4,8 @@ Sub Macro1()
 '
 ' Macro1 Macro
 '
-Application.ScreenUpdating = True
+Application.ScreenUpdating = False
+
 
 ' declare variables
 Dim mycount As Integer
@@ -82,5 +83,18 @@ Next i
 Range("A1").Select
 
 Application.ScreenUpdating = True
+'MsgBox ("Have a nice day")
+mymessage
+End Sub
+
+
+Sub mymessage()
+
 MsgBox ("Have a nice day")
+
+End Sub
+
+
+Sub OpenTemplateWorkbook()
+
 End Sub
