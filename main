@@ -4,9 +4,6 @@ Sub Macro1()
 '
 ' Macro1 Macro
 '
-Application.ScreenUpdating = False
-
-
 ' declare variables
 Dim mycount As Integer
 mycount = 0
@@ -15,6 +12,13 @@ Dim First As Range
 Set First = Range("A2")
 Dim LastCell As Range
 Set LastCell = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell)
+
+'make sure pivot table doesn't exist
+If WorksheetExists("PivotTable") Then
+Exit Sub
+End If
+
+Application.ScreenUpdating = False
 
 ' delete easy first Rs and Cs
 Range("A1:A5").EntireRow.Delete
@@ -82,6 +86,7 @@ NextIteration:
 Next i
 Range("A1").Select
 MakePivot
+SaveWorkbook
 mymessage
 Application.ScreenUpdating = True
 
@@ -103,12 +108,20 @@ Range("A1").Select
 
 End Sub
 
+Function WorksheetExists(sName As String) As Boolean
+    WorksheetExists = Evaluate("ISREF('" & sName & "'!A1)")
+End Function
+
+
 Sub MakePivot()
 
 '' Code below from source https://excelchamps.com/blog/vba-to-create-pivot-table/
 '' Copyright by them as template if they have any, else just credit where due
 
 'Declare Variables
+
+
+
 Dim PSheet As Worksheet
 Dim DSheet As Worksheet
 Dim PCache As PivotCache
@@ -175,29 +188,14 @@ ActiveSheet.Cells.ColumnWidth = 9.8
 
 End Sub
 
+Sub SaveWorkbook()
+ActiveWorkbook.Save
+End Sub
 
-'Sub makepivottablerecording()
-''
-'' makepivottablerecording Macro
-''
-'
-'
-'    Sheets.Add
-'    ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
-'        "ptgood (3)!R1C1:R17C4", Version:=6).CreatePivotTable TableDestination:= _
-'        "Sheet3!R3C1", TableName:="PivotTable1", DefaultVersion:=6
-'    Sheets("Sheet3").Select
-'    Cells(3, 1).Select
-'    ActiveWorkbook.ShowPivotTableFieldList = True
-'    With ActiveSheet.PivotTables("PivotTable1").PivotFields( _
-'        "Employee Name (Number)")
-'        .Orientation = xlColumnField
-'        .Position = 1
-'    End With
-'    With ActiveSheet.PivotTables("PivotTable1").PivotFields("Service Description")
-'        .Orientation = xlRowField
-'        .Position = 1
-'    End With
-'    ActiveSheet.PivotTables("PivotTable1").AddDataField ActiveSheet.PivotTables( _
-'        "PivotTable1").PivotFields("Bill Hrs"), "Sum of Bill Hrs", xlSum
-'End Sub
+
+Public Function MyDocsPath() As String
+   
+MyDocsPath = VBA.Environ$(“USERPROFILE”)
+MsgBox (MyDocsPath)
+   
+End Function
