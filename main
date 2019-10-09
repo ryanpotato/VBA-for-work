@@ -16,8 +16,6 @@ Dim ClientName As String
 ClientName = Range("C10").FormulaR1C1
 Dim BillPeriod As String
 BillPeriod = Right(Range("A4").FormulaR1C1, Len(Range("A4").FormulaR1C1) - 5)
-MsgBox (BillPeriod)
-
 
 
 'make sure pivot table doesn't exist
@@ -93,12 +91,41 @@ NextIteration:
 Next i
 Range("A1").Select
 MakePivot
-SaveWorkbook
+AddUsercells
+'SaveWorkbook
 mymessage
-Application.ScreenUpdating = True
 
+Application.ScreenUpdating = True
 End Sub
 
+Sub AddUsercells()
+Dim FRowNum As Integer
+Dim MyArray(3) As String
+MyArray(0) = "Budget"
+MyArray(1) = "Prior Year"
+MyArray(2) = "Budget to Actual"
+MyArray(3) = "PY to CY"
+Dim i As Integer
+
+
+ActiveSheet.Range("A1").Select
+Selection.End(xlDown).Select
+ActiveCell.Offset(1, 1).Select
+FRowNum = ActiveCell.Row
+ActiveCell.End(xlToRight).Select
+ActiveCell.Offset(0, 1).Select
+For i = 0 To 3
+    
+    Selection.FormulaR1C1 = MyArray(i) ' "Budget"
+    Selection.Font.Bold = True
+    Selection.HorizontalAlignment = xlCenter
+    ActiveCell.Offset(0, 1).Select
+Next i
+
+ActiveCell.Offset(1, -4).Select
+Selection.Interior.Color = 65535
+
+End Sub
 
 Sub mymessage()
 MsgBox ("Have a nice day")
@@ -126,9 +153,6 @@ Sub MakePivot()
 '' Copyright by them as template if they have any, else just credit where due
 
 'Declare Variables
-
-
-
 Dim PSheet As Worksheet
 Dim DSheet As Worksheet
 Dim PCache As PivotCache
@@ -146,17 +170,15 @@ Application.DisplayAlerts = True
 Set PSheet = Worksheets("PivotTable")
 Set DSheet = Worksheets("Report")
 
-
 'Define Data Range
 LastRow = DSheet.Cells(Rows.Count, 1).End(xlUp).Row
 LastCol = DSheet.Cells(1, Columns.Count).End(xlToLeft).Column
 Set PRange = DSheet.Cells(1, 1).Resize(LastRow - 1, LastCol)
 
-
 'Define Pivot Cache
 Set PCache = ActiveWorkbook.PivotCaches.Create _
 (SourceType:=xlDatabase, SourceData:=PRange). _
-CreatePivotTable(TableDestination:=PSheet.Cells(5, 2), _
+CreatePivotTable(TableDestination:=PSheet.Cells(5, 1), _
 TableName:="TimeUsage")
 
 
@@ -206,3 +228,18 @@ MyDocsPath = VBA.Environ$(“USERPROFILE”)
 MsgBox (MyDocsPath)
    
 End Function
+    Range("L18").Select
+    Range("I11").Select
+    Range("L6:O7").Select
+    Selection.ClearContents
+    With Selection.Interior
+        .Pattern = xlNone
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
+    Range("K7").Select
+    With Selection.Interior
+        .Pattern = xlNone
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
