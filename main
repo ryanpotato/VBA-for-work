@@ -233,21 +233,7 @@ MyDocsPath = VBA.Environ$(“USERPROFILE”)
 MsgBox (MyDocsPath)
    
 End Function
-    range("L18").Select
-    range("I11").Select
-    range("L6:O7").Select
-    Selection.ClearContents
-    With Selection.Interior
-        .Pattern = xlNone
-        .TintAndShade = 0
-        .PatternTintAndShade = 0
-    End With
-    range("K7").Select
-    With Selection.Interior
-        .Pattern = xlNone
-        .TintAndShade = 0
-        .PatternTintAndShade = 0
-    End With
+
 
 Sub range()
 '
