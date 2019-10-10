@@ -55,6 +55,7 @@ Dim PTFormat As String
 Dim ReportWSName As String
 ReportWSName = ActiveSheet.Name
 
+
 'make sure pivot table sheet doesn't already exist
 If Not WorksheetExists("PTFormat") Then
     ActiveSheet.Copy After:=ActiveSheet
@@ -377,10 +378,29 @@ Dim strFolderExists As String
 
 End Sub
 
-Sub DataValidator(ReportName As String, PTData As String)
+Sub DataValidator() '(ReportName As String, PTData As String)
+
+Dim rng1 As Range
+Dim rng2 As Range
+Dim GT1 As Single
+Dim GT2 As Single
+Set rng1 = ActiveSheet.UsedRange
 
 
+rng1.Select
+Selection.Find("Grand Totals").Select
+GT1 = ActiveCell.Offset(0, 2).Value
+Worksheets("Report").Activate
+Set rng2 = ActiveSheet.UsedRange
+rng2.Select
+Selection.Find("Grand Totals").Select
+GT2 = ActiveCell.Offset(0, 5).Value
 
+If GT1 - GT2 <> 0 Then
+MsgBox ("Warning, values don't match report")
+Else
+MsgBox ("They match")
+End If
 End Sub
 
 
