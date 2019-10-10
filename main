@@ -147,7 +147,7 @@ Range("A1").Select
 
 
 'validate data (that the report didn't clip any hours off)
-Call DataValidator("hi", "Low")
+'Call DataValidator("hi", "Low")
 
 End Sub
 
