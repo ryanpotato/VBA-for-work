@@ -66,9 +66,6 @@ Else:
 Exit Sub
 End If
 
-
-
-
 Dim GrandTotalHoursReport As Long
 Dim GrandTotalHoursPT As Long
 
@@ -177,7 +174,7 @@ Set PSheet = Worksheets("PivotTable")
 'Set DSheet = Worksheets("Report")
 
 'Define Data Range
-LastRow = DSheet.Cells(Rows.Count, 1).End(xlUp).Row
+LastRow = DSheet.Cells(rows.Count, 1).End(xlUp).Row
 LastCol = DSheet.Cells(1, Columns.Count).End(xlToLeft).Column
 Set PRange = DSheet.Cells(1, 1).Resize(LastRow - 1, LastCol)
 
@@ -398,12 +395,12 @@ GT2 = ActiveCell.Offset(0, 5).Value
 
 If GT1 - GT2 <> 0 Then
 MsgBox ("Warning, values don't match report")
-Else
-MsgBox ("They match")
 End If
 
 Worksheets(PTData).Activate
+Range("A1").Select
 End Sub
+
 
 
 
