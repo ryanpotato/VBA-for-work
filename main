@@ -1,20 +1,7 @@
 Option Explicit
 
-Sub main()
+Sub PivotTableMaker()
 ' Creates neat clean pivot table from Practice Management Reports
-
-' declare variables
-Dim mycount As Integer
-mycount = 0
-Dim i As Integer
-Dim First As range
-Set First = range("A2")
-Dim LastCell As range
-Set LastCell = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell)
-Dim ClientName As String
-ClientName = range("C10").FormulaR1C1
-Dim BillPeriod As String
-BillPeriod = Right(range("A4").FormulaR1C1, Len(range("A4").FormulaR1C1) - 5)
 
 'make sure pivot table sheet doesn't already exist
 If WorksheetExists("PivotTable") Then
@@ -23,20 +10,49 @@ End If
 
 Application.ScreenUpdating = False
 
-'TODO consider moving to this sub as refactor (first get to green)
+'format the data to be able to make the pivot table
 FormatTable
 
+' make the pivot table on a second worksheet
+MakePivot
+
+' add the users custom cells to the pivot on that worksheet
+AddUsercells
+
+'Save the Workbook in selected directory
+'TODO Get this working
+'SaveWorkbook (ClientName)
+
+Application.ScreenUpdating = True
+'wish them well
+mymessage
+
+End Sub
+
+Sub FormatTable()
+' declare variables
+Dim mycount As Integer
+mycount = 0
+Dim i As Integer
+Dim First As Range
+Set First = Range("A2")
+Dim LastCell As Range
+Set LastCell = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell)
+Dim ClientName As String
+ClientName = Range("C10").FormulaR1C1
+Dim BillPeriod As String
+BillPeriod = Right(Range("A4").FormulaR1C1, Len(Range("A4").FormulaR1C1) - 5)
 
 ' delete easy first Rs and Cs
-range("A1:A5").EntireRow.Delete
-range("B:D,G:H").Delete
+Range("A1:A5").EntireRow.Delete
+Range("B:D,G:H").Delete
 
 ' prepare loops
 Set LastCell = LastCell.End(xlToLeft)
 Set LastCell = LastCell.End(xlToLeft)
 Set LastCell = LastCell.End(xlToLeft)
-Set First = range("A2")
-mycount = range(First, LastCell).Cells.Count
+Set First = Range("A2")
+mycount = Range(First, LastCell).Cells.Count
 First.Select
 'GoTo tempstart
 
@@ -91,93 +107,8 @@ Again:
     ActiveCell.Offset(1).Select
 NextIteration:
 Next i
-range("A1").Select
-
-' make the pivot table on a second worksheet
-MakePivot
-
-' add the users custom cells to the pivot on that worksheet
-AddUsercells
-
-'Save the Workbook in selected directory
-'TODO Get this working
-'SaveWorkbook (ClientName)
-
-'wish them well
-mymessage
-
-Application.ScreenUpdating = True
+Range("A1").Select
 End Sub
-Sub FormatTable()
-'consider placing formatting portion of main in format table. consider how the variables will work
-End Sub
-
-Sub AddUsercells()
-Dim FRowNum As Integer
-Dim LRowNum As Integer
-Dim MyArray(3) As String
-Dim TimesToDo As Integer
-MyArray(0) = "Budget"
-MyArray(1) = "Prior Year"
-MyArray(2) = "Budget to Actual"
-MyArray(3) = "PY to CY"
-Dim i As Integer
-
-ActiveSheet.range("A1").Select
-Selection.End(xlDown).End(xlDown).Select
-LRowNum = ActiveCell.Row
-Selection.End(xlUp).Select
-FRowNum = ActiveCell.Row
-TimesToDo = LRowNum - FRowNum - 2
-ActiveCell.Offset(1, 1).Select
-ActiveCell.End(xlToRight).Select
-ActiveCell.Offset(0, 1).Select
-For i = 0 To 3
-    Selection.FormulaR1C1 = MyArray(i) ' "Budget"
-    Selection.Font.Bold = True
-    Selection.HorizontalAlignment = xlCenter
-    ActiveCell.Offset(0, 1).Select
-Next i
-
-'shade yeller
-ActiveCell.Offset(1, -4).Select
-ActiveCell.range("A1:B" & CStr(TimesToDo)).Select
-Selection.Interior.Color = 65535
-ActiveCell.Offset(0, 2).Select
-
-For i = 0 To TimesToDo
-     ActiveCell.Formula = "=" & ActiveCell.Offset(0, -2).Address & "-" & ActiveCell.Offset(0, -3).Address
-     ActiveCell.Offset(0, 1).Select
-     ActiveCell.Formula = "=" & ActiveCell.Offset(0, -2).Address & "-" & ActiveCell.Offset(0, -4).Address
-     ActiveCell.Offset(1, -1).range("A1").Select
-Next i
-Selection.Offset(-1, -2).Select
-For i = 0 To 1
-    ActiveCell.Formula = "=SUM(R[-" & CStr(TimesToDo) & "]C:R[-1]C)"
-    ActiveCell.Offset(0, 1).range("A1").Select
-Next i
-
-End Sub
-
-Sub mymessage()
-MsgBox ("Have a nice day")
-
-End Sub
-
-
-Sub OpenTemplateWorkbook()
-'' not going to use this approach. abandoned
-'Dim path As String
-'path = "C:\Users\gcr\Documents\Clients\DSB\Elaine\WIP macro project\Root\T.xlsx"
-'
-'Workbooks.Open (path)
-'range("A1").Select
-
-End Sub
-
-Function WorksheetExists(sName As String) As Boolean
-    WorksheetExists = Evaluate("ISREF('" & sName & "'!A1)")
-End Function
 
 Sub MakePivot()
 
@@ -189,21 +120,22 @@ Dim PSheet As Worksheet
 Dim DSheet As Worksheet
 Dim PCache As PivotCache
 Dim PTable As PivotTable
-Dim PRange As range
+Dim PRange As Range
 Dim LastRow As Long
 Dim LastCol As Long
 
 'create new Worksheet
 On Error Resume Next
+Set DSheet = ActiveSheet
 Application.DisplayAlerts = False
 Sheets.Add After:=ActiveSheet
 ActiveSheet.Name = "PivotTable"
 Application.DisplayAlerts = True
 Set PSheet = Worksheets("PivotTable")
-Set DSheet = Worksheets("Report")
+'Set DSheet = Worksheets("Report")
 
 'Define Data Range
-LastRow = DSheet.Cells(Rows.Count, 1).End(xlUp).Row
+LastRow = DSheet.Cells(rows.Count, 1).End(xlUp).Row
 LastCol = DSheet.Cells(1, Columns.Count).End(xlToLeft).Column
 Set PRange = DSheet.Cells(1, 1).Resize(LastRow - 1, LastCol)
 
@@ -248,6 +180,74 @@ End With
 ActiveSheet.Cells.ColumnWidth = 9.8
 
 End Sub
+
+Sub AddUsercells()
+Dim FRowNum As Integer
+Dim LRowNum As Integer
+Dim MyArray(3) As String
+Dim TimesToDo As Integer
+MyArray(0) = "Budget"
+MyArray(1) = "Prior Year"
+MyArray(2) = "Budget to Actual"
+MyArray(3) = "PY to CY"
+Dim i As Integer
+
+ActiveSheet.Range("A1").Select
+Selection.End(xlDown).End(xlDown).Select
+LRowNum = ActiveCell.Row
+Selection.End(xlUp).Select
+FRowNum = ActiveCell.Row
+TimesToDo = LRowNum - FRowNum - 2
+ActiveCell.Offset(1, 1).Select
+ActiveCell.End(xlToRight).Select
+ActiveCell.Offset(0, 1).Select
+For i = 0 To 3
+    Selection.FormulaR1C1 = MyArray(i) ' "Budget"
+    Selection.Font.Bold = True
+    Selection.HorizontalAlignment = xlCenter
+    ActiveCell.Offset(0, 1).Select
+Next i
+
+'shade yeller
+ActiveCell.Offset(1, -4).Select
+ActiveCell.Range("A1:B" & CStr(TimesToDo)).Select
+Selection.Interior.Color = 65535
+ActiveCell.Offset(0, 2).Select
+
+For i = 0 To TimesToDo
+     ActiveCell.Formula = "=" & ActiveCell.Offset(0, -2).Address & "-" & ActiveCell.Offset(0, -3).Address
+     ActiveCell.Offset(0, 1).Select
+     ActiveCell.Formula = "=" & ActiveCell.Offset(0, -2).Address & "-" & ActiveCell.Offset(0, -4).Address
+     ActiveCell.Offset(1, -1).Range("A1").Select
+Next i
+Selection.Offset(-1, -2).Select
+For i = 0 To 1
+    ActiveCell.Formula = "=SUM(R[-" & CStr(TimesToDo) & "]C:R[-1]C)"
+    ActiveCell.Offset(0, 1).Range("A1").Select
+Next i
+
+End Sub
+
+Sub mymessage()
+MsgBox ("Have a nice day")
+
+End Sub
+
+
+Sub OpenTemplateWorkbook()
+'' not going to use this approach. abandoned
+'Dim path As String
+'path = "C:\Users\gcr\Documents\Clients\DSB\Elaine\WIP macro project\Root\T.xlsx"
+'
+'Workbooks.Open (path)
+'range("A1").Select
+
+End Sub
+
+Function WorksheetExists(sName As String) As Boolean
+    WorksheetExists = Evaluate("ISREF('" & sName & "'!A1)")
+End Function
+
 Sub firesaveworkbook()
 SaveWorkbook
 End Sub
@@ -262,4 +262,3 @@ End Sub
 Public Function MyDocsPath() As String
 MyDocsPath = VBA.Environ$("USERPROFILE")
 End Function
-
