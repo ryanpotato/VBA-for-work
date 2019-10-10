@@ -54,12 +54,12 @@ mycount = 0
 Dim PTFormat As String
 Dim ReportWSName As String
 ReportWSName = ActiveSheet.Name
-
+PTFormat = "PTFormat"
 
 'make sure pivot table sheet doesn't already exist
 If Not WorksheetExists("PTFormat") Then
     ActiveSheet.Copy After:=ActiveSheet
-    ActiveSheet.Name = "PTFormat"
+    ActiveSheet.Name = PTFormat
     Worksheets("PTFormat").Activate
 Else:
     Worksheets("PTFormat").Activate
@@ -148,7 +148,7 @@ Range("A1").Select
 
 
 'validate data (that the report didn't clip any hours off)
-Call DataValidator(ReportWSName, "PTData")
+Call DataValidator(ReportWSName, "PTFormat")
 
 End Sub
 
@@ -378,7 +378,7 @@ Dim strFolderExists As String
 
 End Sub
 
-Sub DataValidator() '(ReportName As String, PTData As String)
+Sub DataValidator(ReportName As String, PTData As String)
 
 Dim rng1 As Range
 Dim rng2 As Range
@@ -390,7 +390,7 @@ Set rng1 = ActiveSheet.UsedRange
 rng1.Select
 Selection.Find("Grand Totals").Select
 GT1 = ActiveCell.Offset(0, 2).Value
-Worksheets("Report").Activate
+Worksheets(ReportName).Activate
 Set rng2 = ActiveSheet.UsedRange
 rng2.Select
 Selection.Find("Grand Totals").Select
@@ -401,6 +401,8 @@ MsgBox ("Warning, values don't match report")
 Else
 MsgBox ("They match")
 End If
+
+Worksheets(PTData).Activate
 End Sub
 
 
