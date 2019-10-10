@@ -11,28 +11,10 @@ Dim DirToSave
 DirToSave = MyDocsPath & "\Documents\" & "EngagementTimeReports\"
 Dim FileNameToSaveAs
 FileNameToSaveAs = ClientName & BillPeriod
-Dim pathtosave As String
-pathtosave = DirToSave & FileNameToSaveAs
+
 
 DirectoryExistenceCheck (DirToSave)
-
-
-'
-'Dim strFolderName As String
-'Dim strFolderExists As String
-'
-'    strFolderExists = Dir(DirToSave, vbDirectory)
-'
-'    If Len(Dir(dirtosave, vbDirectory)) = 0 Then
-'    MkDir DirToSave
-'    End If
- 
-''TODO Get this working
-
-
-
-ActiveWorkbook.SaveAs (pathtosave)
-
+Call SaveWorkbook(DirToSave, FileNameToSaveAs)
 
 
 'make sure pivot table sheet doesn't already exist
@@ -277,14 +259,11 @@ Function WorksheetExists(sName As String) As Boolean
     WorksheetExists = Evaluate("ISREF('" & sName & "'!A1)")
 End Function
 
-Sub firesaveworkbook()
-SaveWorkbook
-End Sub
-''TODO Get this working
-Sub SaveWorkbook(Optional filename As String)
-Dim pathtosave As String
-pathtosave = MyDocsPath & "\MyDocuments\ClientWip\excellent" & filename
-ActiveWorkbook.SaveAs (pathtosave)
+Sub SaveWorkbook(DirToSave As String, FileName As String)
+Dim PathToSave As String
+FileName = Replace(FileName, "\", "-")
+PathToSave = DirToSave & FileName
+ActiveWorkbook.SaveAs (PathToSave)
 End Sub
 
 
@@ -363,3 +342,4 @@ Dim strFolderExists As String
     End If
 
 End Sub
+
