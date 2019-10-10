@@ -40,8 +40,6 @@ DirectoryExistenceCheck (DirToSave)
 Call SaveWorkbook(DirToSave, FileNameToSaveAs)
 
 
-'validate data (that the report didn't clip any hours off)
-
 
 'wish them well
 mymessage
@@ -52,10 +50,23 @@ Sub FormatTable()
 ' declare variables
 Dim mycount As Integer
 mycount = 0
+Dim PTFormat As String
 Dim OriginalActiveSheet As String
 OriginalActiveSheet = ActiveSheet.Name
-ActiveSheet.Copy After:=ActiveSheet
-ActiveSheet.Name = "PTFormat"
+
+'make sure pivot table sheet doesn't already exist
+If Not WorksheetExists("PTFormat") Then
+    ActiveSheet.Copy After:=ActiveSheet
+    ActiveSheet.Name = "PTFormat"
+    Worksheets("PTFormat").Activate
+Else: Exit Sub
+End If
+
+
+
+
+Dim GrandTotalHoursReport As Long
+Dim GrandTotalHoursPT As Long
 
 
 Dim i As Integer
@@ -130,6 +141,11 @@ Again:
 NextIteration:
 Next i
 Range("A1").Select
+
+
+'validate data (that the report didn't clip any hours off)
+Call DataValidator("hi", "Low")
+
 End Sub
 
 Sub MakePivot()
@@ -358,7 +374,9 @@ Dim strFolderExists As String
 
 End Sub
 
-Sub DataValidation(ReportName As String, PTData As String)
+Sub DataValidator(ReportName As String, PTData As String)
+
+
 
 End Sub
 
