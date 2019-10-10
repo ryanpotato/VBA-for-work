@@ -3,6 +3,38 @@ Option Explicit
 Sub PivotTableMaker()
 ' Creates neat clean pivot table from Practice Management Reports
 
+Dim ClientName As String
+ClientName = Range("C10").FormulaR1C1
+Dim BillPeriod As String
+BillPeriod = Right(Range("A4").FormulaR1C1, Len(Range("A4").FormulaR1C1) - 5)
+Dim DirToSave
+DirToSave = MyDocsPath & "\Documents\" & "EngagementTimeReports\"
+Dim FileNameToSaveAs
+FileNameToSaveAs = ClientName & BillPeriod
+Dim pathtosave As String
+pathtosave = DirToSave & FileNameToSaveAs
+
+DirectoryExistenceCheck (DirToSave)
+
+
+'
+'Dim strFolderName As String
+'Dim strFolderExists As String
+'
+'    strFolderExists = Dir(DirToSave, vbDirectory)
+'
+'    If Len(Dir(dirtosave, vbDirectory)) = 0 Then
+'    MkDir DirToSave
+'    End If
+ 
+''TODO Get this working
+
+
+
+ActiveWorkbook.SaveAs (pathtosave)
+
+
+
 'make sure pivot table sheet doesn't already exist
 If WorksheetExists("PivotTable") Then
 Exit Sub
@@ -24,6 +56,7 @@ AddUsercells
 'SaveWorkbook (ClientName)
 
 Application.ScreenUpdating = True
+
 'wish them well
 mymessage
 
@@ -38,10 +71,7 @@ Dim First As Range
 Set First = Range("A2")
 Dim LastCell As Range
 Set LastCell = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell)
-Dim ClientName As String
-ClientName = Range("C10").FormulaR1C1
-Dim BillPeriod As String
-BillPeriod = Right(Range("A4").FormulaR1C1, Len(Range("A4").FormulaR1C1) - 5)
+
 
 ' delete easy first Rs and Cs
 Range("A1:A5").EntireRow.Delete
@@ -243,17 +273,6 @@ MsgBox ("Have a nice day")
 
 End Sub
 
-
-Sub OpenTemplateWorkbook()
-'' not going to use this approach. abandoned
-'Dim path As String
-'path = "C:\Users\gcr\Documents\Clients\DSB\Elaine\WIP macro project\Root\T.xlsx"
-'
-'Workbooks.Open (path)
-'range("A1").Select
-
-End Sub
-
 Function WorksheetExists(sName As String) As Boolean
     WorksheetExists = Evaluate("ISREF('" & sName & "'!A1)")
 End Function
@@ -333,3 +352,14 @@ Dim cell As Range
 
 End Sub
 
+Sub DirectoryExistenceCheck(strFolderName As String)
+
+Dim strFolderExists As String
+
+    strFolderExists = Dir(strFolderName, vbDirectory)
+ 
+    If Len(Dir(strFolderName, vbDirectory)) = 0 Then
+    MkDir strFolderName
+    End If
+
+End Sub
