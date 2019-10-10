@@ -49,6 +49,12 @@ Sub FormatTable()
 ' declare variables
 Dim mycount As Integer
 mycount = 0
+Dim OriginalActiveSheet As String
+OriginalActiveSheet = ActiveSheet.Name
+ActiveSheet.Copy After:=ActiveSheet
+ActiveSheet.Name = "PTFormat"
+
+
 Dim i As Integer
 Dim First As Range
 Set First = Range("A2")
