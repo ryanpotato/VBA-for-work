@@ -216,8 +216,12 @@ ActiveCell.Offset(0, 2).Select
 
 For i = 0 To TimesToDo
      ActiveCell.Formula = "=" & ActiveCell.Offset(0, -2).Address & "-" & ActiveCell.Offset(0, -3).Address
+     Selection.Style = "Comma"
+     Selection.NumberFormat = "_(* #,##0_);_(* (#,##0);_(* ""-""??_);_(@_)"
      ActiveCell.Offset(0, 1).Select
      ActiveCell.Formula = "=" & ActiveCell.Offset(0, -2).Address & "-" & ActiveCell.Offset(0, -4).Address
+     Selection.Style = "Comma"
+     Selection.NumberFormat = "_(* #,##0_);_(* (#,##0);_(* ""-""??_);_(@_)"
      ActiveCell.Offset(1, -1).Range("A1").Select
 Next i
 Selection.Offset(-1, -2).Select
@@ -262,3 +266,5 @@ End Sub
 Public Function MyDocsPath() As String
 MyDocsPath = VBA.Environ$("USERPROFILE")
 End Function
+
+
