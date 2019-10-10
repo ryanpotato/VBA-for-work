@@ -15,6 +15,7 @@ FileNameToSaveAs = ClientName & BillPeriod
 
 'make sure pivot table sheet doesn't already exist
 If WorksheetExists("PivotTable") Then
+MsgBox ("Pivot Table already exists. Delete Worksheet and re-run")
 Exit Sub
 End If
 
@@ -59,7 +60,9 @@ If Not WorksheetExists("PTFormat") Then
     ActiveSheet.Copy After:=ActiveSheet
     ActiveSheet.Name = "PTFormat"
     Worksheets("PTFormat").Activate
-Else: Exit Sub
+Else:
+    Worksheets("PTFormat").Activate
+Exit Sub
 End If
 
 
