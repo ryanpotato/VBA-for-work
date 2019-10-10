@@ -35,9 +35,12 @@ AddUsercells
 
 Application.ScreenUpdating = True
 
-
+' Create directory and save
 DirectoryExistenceCheck (DirToSave)
 Call SaveWorkbook(DirToSave, FileNameToSaveAs)
+
+
+'validate data (that the report didn't clip any hours off)
 
 
 'wish them well
@@ -154,7 +157,7 @@ Set PSheet = Worksheets("PivotTable")
 'Set DSheet = Worksheets("Report")
 
 'Define Data Range
-LastRow = DSheet.Cells(rows.Count, 1).End(xlUp).Row
+LastRow = DSheet.Cells(Rows.Count, 1).End(xlUp).Row
 LastCol = DSheet.Cells(1, Columns.Count).End(xlToLeft).Column
 Set PRange = DSheet.Cells(1, 1).Resize(LastRow - 1, LastCol)
 
@@ -354,4 +357,10 @@ Dim strFolderExists As String
     End If
 
 End Sub
+
+Sub DataValidation(ReportName As String, PTData As String)
+
+End Sub
+
+
 
