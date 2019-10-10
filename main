@@ -7,14 +7,10 @@ Dim ClientName As String
 ClientName = Range("C10").FormulaR1C1
 Dim BillPeriod As String
 BillPeriod = Right(Range("A4").FormulaR1C1, Len(Range("A4").FormulaR1C1) - 5)
-Dim DirToSave
+Dim DirToSave As String
 DirToSave = MyDocsPath & "\Documents\" & "EngagementTimeReports\"
-Dim FileNameToSaveAs
+Dim FileNameToSaveAs As String
 FileNameToSaveAs = ClientName & BillPeriod
-
-
-DirectoryExistenceCheck (DirToSave)
-Call SaveWorkbook(DirToSave, FileNameToSaveAs)
 
 
 'make sure pivot table sheet doesn't already exist
@@ -38,6 +34,11 @@ AddUsercells
 'SaveWorkbook (ClientName)
 
 Application.ScreenUpdating = True
+
+
+DirectoryExistenceCheck (DirToSave)
+Call SaveWorkbook(DirToSave, FileNameToSaveAs)
+
 
 'wish them well
 mymessage
@@ -261,8 +262,13 @@ End Function
 
 Sub SaveWorkbook(DirToSave As String, FileName As String)
 Dim PathToSave As String
-FileName = Replace(FileName, "\", "-")
+FileName = Replace(FileName, "/", "-")
 PathToSave = DirToSave & FileName
+
+'    If Len(Dir(PathToSave)) <> 0 Then
+'    MsgBox ("File already exists. Overwrite?")
+'    End If
+ On Error Resume Next
 ActiveWorkbook.SaveAs (PathToSave)
 End Sub
 
