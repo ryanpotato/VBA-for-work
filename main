@@ -52,8 +52,8 @@ Sub FormatTable()
 Dim mycount As Integer
 mycount = 0
 Dim PTFormat As String
-Dim OriginalActiveSheet As String
-OriginalActiveSheet = ActiveSheet.Name
+Dim ReportWSName As String
+ReportWSName = ActiveSheet.Name
 
 'make sure pivot table sheet doesn't already exist
 If Not WorksheetExists("PTFormat") Then
@@ -147,7 +147,7 @@ Range("A1").Select
 
 
 'validate data (that the report didn't clip any hours off)
-'Call DataValidator("hi", "Low")
+Call DataValidator(ReportWSName, "PTData")
 
 End Sub
 
