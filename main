@@ -42,10 +42,10 @@ Application.ScreenUpdating = True
 
 ' Create directory and save
 
-'check if file exists
-'if
+'check if chosen save directory exists
 If Not DirectoryExistenceCheck(SaveSettingsFile) Then
 DirToSave = GetPermSaveFolder
+Call MakeSaveSettingsFile(DirToSave, SaveSettingsFile)
 Else
 DirToSave = ReadSaveLocation(SaveSettingsFile)
 End If
@@ -421,8 +421,7 @@ Worksheets(PTData).Activate
 Range("A1").Select
 End Sub
 
-Sub StoreSavingLocation(FileName As String)
-Dim myDir As String
+Sub MakeSaveSettingsFile(DirToRecord As String, FileToRecordTo As String)
 Dim fullpath As String
 'Sub StoreSavingLocation(DFileName as string)
 
@@ -431,10 +430,9 @@ Dim fullpath As String
 '' a notepad file stored ina  certain locatoin or to the registry
 '' Then in future occurences it looks for this location so the user isn't prompted
 
-        myDir = GetPermSaveFolder
-        fullpath = myDir & "\" & FileName
-        Open fullpath For Output As #1
-        Write #1, fullpath
+
+        Open FileToRecordTo For Output As #1
+        Write #1, DirToRecord
         Close #1
         
 End Sub
