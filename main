@@ -301,7 +301,7 @@ End Function
 Sub SaveWorkbook(DirToSave As String, FileName As String)
 Dim PathToSave As String
 FileName = Replace(FileName, "/", "-")
-PathToSave = DirToSave & FileName
+PathToSave = DirToSave & "\" & FileName
 
 '    If Len(Dir(PathToSave)) <> 0 Then
 '    MsgBox ("File already exists. Overwrite?")
