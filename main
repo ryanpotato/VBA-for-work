@@ -11,6 +11,7 @@ Dim DirToSave As String
 DirToSave = MyDocsPath & "\Documents\" & "EngagementTimeReports\"
 Dim FileNameToSaveAs As String
 FileNameToSaveAs = ClientName & BillPeriod
+Application.EnableEvents = False
 
 
 'make sure pivot table sheet doesn't already exist
@@ -41,7 +42,7 @@ DirectoryExistenceCheck (DirToSave)
 Call SaveWorkbook(DirToSave, FileNameToSaveAs)
 
 
-
+Application.EnableEvents = True
 'wish them well
 mymessage
 
