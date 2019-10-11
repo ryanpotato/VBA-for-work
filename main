@@ -43,7 +43,7 @@ Application.ScreenUpdating = True
 ' Create directory and save
 
 'check if chosen save directory exists
-If Not DirectoryExistenceCheck(SaveSettingsFile) Then
+If Not FileExists(SaveSettingsFile) Then
 DirToSave = GetPermSaveFolder
 Call MakeSaveSettingsFile(DirToSave, SaveSettingsFile)
 Else
@@ -458,3 +458,17 @@ Dim content As String
         Close #1
 ReadSaveLocation = content
 End Function
+
+Function FileExists(FilePath As String) As Boolean
+Dim TestStr As String
+    TestStr = ""
+    On Error Resume Next
+    TestStr = Dir(FilePath)
+    On Error GoTo 0
+    If TestStr = "" Then
+        FileExists = False
+    Else
+        FileExists = True
+    End If
+End Function
+
