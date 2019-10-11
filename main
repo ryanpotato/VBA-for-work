@@ -15,8 +15,6 @@ FileNameToSaveAs = ClientName & BillPeriod
 Application.EnableEvents = False
 SaveSettingsFile = MyDocsPath() & "\Documents\" & "SaveSettings.txt"
 
-
-
 'make sure pivot table sheet doesn't already exist
 If WorksheetExists("PivotTable") Then
 MsgBox ("Pivot Table already exists. Delete Worksheet and re-run")
@@ -42,18 +40,20 @@ Application.ScreenUpdating = True
 
 ' Create directory and save
 
-'check if chosen save directory exists
-If Not FileExists(SaveSettingsFile) Then
-DirToSave = GetPermSaveFolder
-Call MakeSaveSettingsFile(DirToSave, SaveSettingsFile)
-Else
-DirToSave = ReadSaveLocation(SaveSettingsFile)
-End If
+    'check if chosen save directory exists, else make for persistence
+    If Not FileExists(SaveSettingsFile) Then
+    DirToSave = GetPermSaveFolder
+    Call MakeSaveSettingsFile(DirToSave, SaveSettingsFile)
+    Else
+    DirToSave = ReadSaveLocation(SaveSettingsFile)
+    End If
 
+' save workbook automatically
 Call SaveWorkbook(DirToSave, FileNameToSaveAs)
 
 
 Application.EnableEvents = True
+
 'wish them well
 mymessage
 
@@ -64,6 +64,8 @@ Sub FormatTable()
 Dim mycount As Integer
 mycount = 0
 Dim PTFormat As String
+Dim r As Long
+Dim rangetosum As String
 Dim ReportWSName As String
 ReportWSName = ActiveSheet.Name
 PTFormat = "PTFormat"
@@ -149,6 +151,13 @@ Again:
         If (ActiveCell = "" And ActiveCell.Offset(0, 1) = "") Or (ActiveCell.Font.Bold = True And InStr(ActiveCell.Value, "Totals") = 0) Then
             GoTo Again
         End If
+    End If
+    If (ActiveCell.Font.Bold = True And InStr(ActiveCell.Value, "Totals") <> 0) Then
+    ActiveCell.Offset(0, 2).Select
+    '' Recalc total bill hrs for data validation purposes
+    rangetosum = ActiveCell.Offset(-1).Address & ":" & ActiveCell.End(xlUp).Address
+    
+    ActiveCell.Formula = "=SUM(" & rangetosum & ")"
     End If
     ActiveCell.Offset(1).Select
 NextIteration:
@@ -474,4 +483,6 @@ Dim TestStr As String
         FileExists = True
     End If
 End Function
+
+
 
