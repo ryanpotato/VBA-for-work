@@ -4,6 +4,7 @@ Sub PivotTableMaker()
 ' Creates neat clean pivot table from Practice Management Reports
 
 Dim ClientName As String
+Dim SaveSettingsFile As String
 ClientName = Range("C10").FormulaR1C1
 Dim BillPeriod As String
 BillPeriod = Right(Range("A4").FormulaR1C1, Len(Range("A4").FormulaR1C1) - 5)
@@ -12,6 +13,8 @@ DirToSave = MyDocsPath & "\Documents\" & "EngagementTimeReports\"
 Dim FileNameToSaveAs As String
 FileNameToSaveAs = ClientName & BillPeriod
 Application.EnableEvents = False
+SaveSettingsFile = MyDocsPath() & "\Documents\" & "SaveSettings.txt"
+
 
 
 'make sure pivot table sheet doesn't already exist
@@ -38,7 +41,15 @@ AddUsercells
 Application.ScreenUpdating = True
 
 ' Create directory and save
-DirectoryExistenceCheck (DirToSave)
+
+'check if file exists
+'if
+If Not DirectoryExistenceCheck(SaveSettings) Then
+DirToSave = GetPermSaveFolder
+
+End If
+
+
 Call SaveWorkbook(DirToSave, FileNameToSaveAs)
 
 
@@ -423,7 +434,7 @@ Dim fullpath As String
 
 '' THE FOLLOWING FROM ONLINE WRITES A RANGE TO A TEXT VALUE. I ONLY NEED ONE LINE
 
-        myDir = GetFolder
+        myDir = GetPermSaveFolder
         fullpath = myDir & "\" & FileName
         
         Open fullpath For Output As #1
@@ -445,7 +456,7 @@ Dim fullpath As String
          Close #1
         
 End Sub
-Function GetFolder() As String
+Function GetPermSaveFolder() As String
 Dim fldr As FileDialog
 Dim sItem As String
 Set fldr = Application.FileDialog(msoFileDialogFolderPicker)
