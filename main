@@ -439,15 +439,18 @@ End Sub
 Function GetPermSaveFolder() As String
 Dim fldr As FileDialog
 Dim sItem As String
+Dim strpath As String
 Set fldr = Application.FileDialog(msoFileDialogFolderPicker)
 With fldr
     .Title = "Select a Folder"
     .AllowMultiSelect = False
-    '.InitialFileName = strPath
+    '.InitialFileName = strpath
     If .Show <> -1 Then GoTo NextCode
     sItem = .SelectedItems(1)
 End With
-GetPermSaveFolder = fldr
+NextCode:
+GetPermSaveFolder = sItem
+'GetPermSaveFolder = fldr
 End Function
 
 Function ReadSaveLocation(SaveSettingsFile As String) As String
@@ -471,4 +474,6 @@ Dim TestStr As String
         FileExists = True
     End If
 End Function
+
+
 
