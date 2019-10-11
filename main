@@ -410,6 +410,33 @@ Worksheets(PTData).Activate
 Range("A1").Select
 End Sub
 
+Sub StoreSavingLocation()
 
+'' TODO write a sub that first time prompts a dialogue box with user
+'' asking them where to save their file. Then it writes the path either to
+'' a notepad file stored ina  certain locatoin or to the registry
+'' Then in future occurences it looks for this location so the user isn't prompted
+
+
+'' THE FOLLOWING FROM ONLINE WRITES A RANGE TO A TEXT VALUE. I ONLY NEED ONE LINE
+        Dim myDir As String
+        myDir = Application.DefaultFilePath & "\sales.txt"
+        Open myFile For Output As #1
+        Write #1, "This is the place"
+'        For i = 1 To rng.rows.Count
+'            For j = 1 To rng.Columns.Count
+'                cellValue = rng.Cells(i, j).Value
+'                If j = rng.Columns.Count Then
+'                    Write #1, cellValue
+'                Else
+'                    Write #1, cellValue,
+'            Next j
+'                Close #1
+    
+        'Next i
+            'End If
+         Close #1
+        
+End Sub
 
 
