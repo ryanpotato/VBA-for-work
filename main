@@ -475,5 +475,3 @@ Dim TestStr As String
     End If
 End Function
 
-
-
