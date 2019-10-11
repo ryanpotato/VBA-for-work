@@ -410,7 +410,10 @@ Worksheets(PTData).Activate
 Range("A1").Select
 End Sub
 
-Sub StoreSavingLocation()
+Sub StoreSavingLocation(FileName As String)
+Dim myDir As String
+Dim fullpath As String
+'Sub StoreSavingLocation(DFileName as string)
 
 '' TODO write a sub that first time prompts a dialogue box with user
 '' asking them where to save their file. Then it writes the path either to
@@ -419,10 +422,14 @@ Sub StoreSavingLocation()
 
 
 '' THE FOLLOWING FROM ONLINE WRITES A RANGE TO A TEXT VALUE. I ONLY NEED ONE LINE
-        Dim myDir As String
-        myDir = Application.DefaultFilePath & "\sales.txt"
-        Open myFile For Output As #1
+
+        myDir = GetFolder
+        fullpath = myDir & "\" & FileName
+        
+        Open fullpath For Output As #1
+        
         Write #1, "This is the place"
+        
 '        For i = 1 To rng.rows.Count
 '            For j = 1 To rng.Columns.Count
 '                cellValue = rng.Cells(i, j).Value
@@ -438,5 +445,19 @@ Sub StoreSavingLocation()
          Close #1
         
 End Sub
-
+Function GetFolder() As String
+Dim fldr As FileDialog
+Dim sItem As String
+Set fldr = Application.FileDialog(msoFileDialogFolderPicker)
+With fldr
+    .Title = "Select a Folder"
+    .AllowMultiSelect = False
+    '.InitialFileName = strPath
+    If .Show <> -1 Then GoTo NextCode
+    sItem = .SelectedItems(1)
+End With
+NextCode:
+GetFolder = sItem
+Set fldr = Nothing
+End Function
 
