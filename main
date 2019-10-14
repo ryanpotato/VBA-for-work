@@ -9,18 +9,19 @@ Dim ClientName As String
 Dim SaveSettingsFile As String
 ClientName = Range("C10").FormulaR1C1
 Dim BillPeriod As String
+
+On Error GoTo ErrorHandler:
 BillPeriod = Right(Range("A4").FormulaR1C1, Len(Range("A4").FormulaR1C1) - 5)
 Dim DirToSave As String
-DirToSave = MyDocsPath & "\Documents\" & "EngagementTimeReports\"
+'DirToSave = MyDocsPath & "\Documents\" & "EngagementTimeReports\"
 Dim FileNameToSaveAs As String
 FileNameToSaveAs = ClientName & BillPeriod
 Application.EnableEvents = False
 SaveSettingsFile = MyDocsPath() & "\Documents\" & "SaveSettings.txt"
-Dim ReportWSName As String
+Dim ReportWSName$
 ReportWSName = Application.ActiveSheet.Name
 Dim PTFormat As String
 PTFormat = "PTFormat"
-
 
 'make sure pivot table sheet doesn't already exist
 If WorksheetExists("PivotTable") Then
@@ -65,8 +66,12 @@ Application.EnableEvents = True
 
 'wish them well
 mymessage
-
+Exit Sub
+ErrorHandler:
+MsgBox "Be sure the report worksheet is selected"
 End Sub
+
+
 
 Sub FormatTable()
 
