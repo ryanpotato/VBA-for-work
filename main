@@ -1,7 +1,9 @@
 Option Explicit
 
-Sub PivotTableMaker()
+Sub PivotTableReporterNS()
 ' Creates neat clean pivot table from Practice Management Reports
+' This newer version avoids the .select method to optimize the code for faster performance
+'' TODO Review for any bugs
 
 Dim ClientName As String
 Dim SaveSettingsFile As String
@@ -51,7 +53,6 @@ Application.ScreenUpdating = True
 ' save workbook automatically
 Call SaveWorkbook(DirToSave, FileNameToSaveAs)
 
-
 Application.EnableEvents = True
 
 'wish them well
@@ -60,6 +61,9 @@ mymessage
 End Sub
 
 Sub FormatTable()
+
+Application.EnableEvents = False
+
 ' declare variables
 Dim mycount As Integer
 mycount = 0
@@ -69,6 +73,13 @@ Dim rangetosum As String
 Dim ReportWSName As String
 ReportWSName = ActiveSheet.Name
 PTFormat = "PTFormat"
+Dim valtocopy As String
+Dim x2 As Range
+Dim x3 As Range
+Dim xdel As Range
+Dim rowsdeleted As Integer
+rowsdeleted = 0
+
 
 'make sure pivot table sheet doesn't already exist
 If Not WorksheetExists("PTFormat") Then
@@ -77,6 +88,7 @@ If Not WorksheetExists("PTFormat") Then
     Worksheets("PTFormat").Activate
 Else:
     Worksheets("PTFormat").Activate
+
 Exit Sub
 End If
 
@@ -104,63 +116,83 @@ mycount = Range(First, LastCell).Cells.Count
 First.Select
 'GoTo tempstart
 
-For i = 1 To mycount
+For i = 0 To mycount
 ' get names aligned
-If ActiveCell.Font.Bold = False And InStr(ActiveCell.Value, "(") <> 0 And ActiveCell.Offset(0, 1) = "" Then
+If ActiveCell.Offset(i).Font.Bold = False And InStr(ActiveCell.Offset(i).Value, "(") <> 0 And ActiveCell.Offset(i, 1) = "" Then
            
     'code for string to cut and paste names alongside data
-    ActiveCell.Cut
+    'ActiveCell.Offset(i).Cut
     
     ' deal with special case in Practice Management report formatting.
     'TODO make sure this is completely general - i.e. covers all cases
-    If InStr(ActiveCell.Offset(3, 0).Value, "Office ") <> 0 Then
-        ActiveCell.Offset(1).Select
+    If InStr(ActiveCell.Offset(i + 3, 0).Value, "Office ") <> 0 Then
+        
+        valtocopy = ActiveCell.Offset(i)
+        Set x3 = ActiveCell.Offset(i + 1)
+        x3.Formula = valtocopy
+        x3.Font.FontStyle = "arial"
+        x3.Font.Size = 8
+        '.ActiveCell.Offset(i).Copy (ActiveCell.Offset(i + 1))
     Else
-        ActiveCell.Offset(2).Select
+    valtocopy = ActiveCell.Offset(i).FormulaR1C1
+        'ActiveCell.Offset(i + 2).Value = valtocopy
+        'ActiveCell.Offset(i).Copy (Range("a5"))
+
+    
+    Set x2 = ActiveCell.Offset(i + 2)
     End If
 Repeater:
-        ActiveSheet.Paste
-        If ActiveCell.Offset(1, 1) <> "" Then
-            ActiveCell.Copy
-            ActiveCell.Offset(1, 0).Select
+        'ActiveSheet.Offset(i + 2).Paste
+              
+        
+        x2.Formula = valtocopy
+        x2.Font.FontStyle = "arial"
+        x2.Font.Size = 8
+        If x2.Offset(1, 1) <> "" Then
+            Set x2 = x2.Offset(1, 0)
+            x2.Formula = valtocopy
             GoTo Repeater
     
-        Else
+        'Else
         ' code to move to next
-            ActiveCell.Offset(1, 0).Select
+           ' x2 = x2.Offset(1, 0)
         End If
 Else
-ActiveCell.Offset(1, 0).Select
+'do nothing
 End If
 
 Next i
 
 'go back to startcell
-First.Select
+First.Offset(-1).Select
 
+'loop to delete unwanted rows (empties and most bolds)
 tempstart:
+
+
 For i = 1 To mycount
-    If ActiveCell.Row > LastCell.Row Then
-    GoTo NextIteration
+    Set xdel = ActiveCell.Offset(i - rowsdeleted)
+    If xdel.Row > LastCell.Row Then
+        GoTo LastIteration
     End If
     
-    'Now delete all unwanted rows
-    If (ActiveCell = "" And ActiveCell.Offset(0, 1) = "") Or (ActiveCell.Font.Bold = True And InStr(ActiveCell.Value, "Totals") = 0) Then
-Again:
-        ActiveCell.EntireRow.Delete
-        If (ActiveCell = "" And ActiveCell.Offset(0, 1) = "") Or (ActiveCell.Font.Bold = True And InStr(ActiveCell.Value, "Totals") = 0) Then
-            GoTo Again
-        End If
-    End If
-    If (ActiveCell.Font.Bold = True And InStr(ActiveCell.Value, "Totals") <> 0) Then
-    ActiveCell.Offset(0, 2).Select
+    'Now delete all unwanted rows (blanks and most bold rows)
+    If (xdel.Offset(0, 1).FormulaR1C1 = "" Or xdel.Font.Bold = True) And (InStr(xdel.FormulaR1C1, "Totals") = 0) Then
+'Again:
+        xdel.EntireRow.Delete
+        rowsdeleted = rowsdeleted + 1
+   '     If (ActiveCell = "" And ActiveCell.Offset(0, 1) = "") Or (ActiveCell.Font.Bold = True And InStr(ActiveCell.Value, "Totals") = 0) Then
+           ' GoTo Again
+     '   End If
+
+    ElseIf (xdel.Font.Bold = True And InStr(xdel.FormulaR1C1, "Totals") <> 0) Then
+        rangetosum = xdel.Offset(-1, 2).Address & ":" & xdel.Offset(-1, 2).End(xlUp).Address
+        xdel.Offset(0, 2).Formula = "=SUM(" & rangetosum & ")"
     '' Recalc total bill hrs for data validation purposes
-    rangetosum = ActiveCell.Offset(-1).Address & ":" & ActiveCell.End(xlUp).Address
     
-    ActiveCell.Formula = "=SUM(" & rangetosum & ")"
     End If
-    ActiveCell.Offset(1).Select
-NextIteration:
+    'ActiveCell.Offset(1).Select
+LastIteration:
 Next i
 Range("A1").Select
 
@@ -384,7 +416,7 @@ Dim cell As Range
     cell.FormatConditions(cell.FormatConditions.Count).SetFirstPriority
     With cell.FormatConditions(1).Interior
         .PatternColorIndex = xlAutomatic
-        .Color = 65535
+        .Color = 10092543
         .TintAndShade = 0
     End With
     cell.FormatConditions(1).StopIfTrue = False
@@ -431,14 +463,6 @@ Range("A1").Select
 End Sub
 
 Sub MakeSaveSettingsFile(DirToRecord As String, FileToRecordTo As String)
-Dim fullpath As String
-'Sub StoreSavingLocation(DFileName as string)
-
-'' TODO write a sub that first time prompts a dialogue box with user
-'' asking them where to save their file. Then it writes the path either to
-'' a notepad file stored ina  certain locatoin or to the registry
-'' Then in future occurences it looks for this location so the user isn't prompted
-
 
         Open FileToRecordTo For Output As #1
         Write #1, DirToRecord
@@ -483,6 +507,3 @@ Dim TestStr As String
         FileExists = True
     End If
 End Function
-
-
-
