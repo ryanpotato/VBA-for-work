@@ -1,0 +1,70 @@
+Sub RandomSample()
+
+UserInput
+
+End Sub
+
+Sub UserInput()
+
+    Dim MyArray As Variant
+    Dim i As Integer
+    Dim z As Variant
+    Dim r As Integer
+    Dim rng As Range
+    Dim TempRand As Integer
+    Dim RowCount As Integer
+    Dim Quantity As Integer
+    Set rng = Application.InputBox("Select range of sample", "Select Range", Type:=8)
+    RowCount = rng.rows.count
+requantify:
+    Quantity = Application.InputBox("What is your sample size", Type:=1)
+    If Quantity >= RowCount Then
+        MsgBox ("Choose selection size that's smaller than row count")
+        GoTo requantify
+    End If
+    'r = RndBetween(1, count)
+    ReDim MyArray(Quantity - 1)
+    
+    For i = 0 To Quantity - 1
+        
+'in case value already in array (we don't want duplicates)
+retry:
+
+        ' get random int value to potentially load into array
+        TempRand = RndBetween(1, RowCount)
+        
+        ' check if TempRand is already in MyArray
+        If IsInArray(TempRand, MyArray) Then GoTo retry
+
+        'load random number into array at current location
+        MyArray(i) = TempRand
+    Next
+    
+    MsgBox ("the row count is " & RowCount & " and the sample size is " & Quantity)
+
+End Sub
+
+
+Function RndBetween(Low, High) As Integer
+   Randomize
+   RndBetween = Int((High - Low + 1) * Rnd + Low)
+End Function
+
+Private Function IsInArray(valToBeFound As Variant, arr As Variant) As Boolean
+'DEVELOPER: Ryan Wells (wellsr.com)
+'DESCRIPTION: Function to check if a value is in an array of values
+'INPUT: Pass the function a value to search for and an array of values of any data type.
+'OUTPUT: True if is in array, false otherwise
+Dim element As Variant
+On Error GoTo IsInArrayError: 'array is empty
+    For Each element In arr
+        If element = valToBeFound Then
+            IsInArray = True
+            Exit Function
+        End If
+    Next element
+Exit Function
+IsInArrayError:
+On Error GoTo 0
+IsInArray = False
+End Function
