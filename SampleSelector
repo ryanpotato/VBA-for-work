@@ -1,46 +1,70 @@
+Option Explicit
 Sub RandomSample()
 
-UserInput
+MakeArray
 
 End Sub
 
-Sub UserInput()
-
+Sub MakeArray()
+Application.EnableEvents = False
     Dim MyArray As Variant
     Dim i As Integer
-    Dim z As Variant
-    Dim r As Integer
-    Dim rng As Range
-    Dim TempRand As Integer
+    Dim TryRand As Integer
     Dim RowCount As Integer
+    Dim rngCurrentRegion As range
+    Dim NewWs As Worksheet
+    Dim CurrentWSName As String
+    CurrentWSName = Application.ActiveSheet.name
+    
+
+    'Get User Input
+    Dim form As New SelectionParams
+    Dim rng As range
+  '  Set rng = range("a1")
     Dim Quantity As Integer
-    Set rng = Application.InputBox("Select range of sample", "Select Range", Type:=8)
+    
+RequestInput:
+    form.Show vbModal
+    Set rng = range(form.range.text)
+    Quantity = form.SampleSize
+    
+    ' process user input
     RowCount = rng.rows.count
-requantify:
-    Quantity = Application.InputBox("What is your sample size", Type:=1)
     If Quantity >= RowCount Then
         MsgBox ("Choose selection size that's smaller than row count")
-        GoTo requantify
+        GoTo RequestInput
     End If
-    'r = RndBetween(1, count)
+
     ReDim MyArray(Quantity - 1)
     
     For i = 0 To Quantity - 1
-        
-'in case value already in array (we don't want duplicates)
 retry:
-
-        ' get random int value to potentially load into array
-        TempRand = RndBetween(1, RowCount)
-        
-        ' check if TempRand is already in MyArray
-        If IsInArray(TempRand, MyArray) Then GoTo retry
-
-        'load random number into array at current location
-        MyArray(i) = TempRand
+        ' get random int values loaded into array
+        TryRand = RndBetween(1, RowCount)
+        If IsInArray(TryRand, MyArray) Then GoTo retry
+        MyArray(i) = TryRand
     Next
     
     MsgBox ("the row count is " & RowCount & " and the sample size is " & Quantity)
+    
+    '' we got the user input, and we made the array of random numbers
+    '' they are not ordered. For our purposes, that doesn't matter, even for optimization I think.
+    '' can they be ordered? I'm sure with more code. Which brings us to the TODOs.
+    
+    '' TODO
+    '' Copy worksheet or at least used area or used array
+    Set rngCurrentRegion = rng.CurrentRegion
+    Set NewWs = Application.ActiveWorkbook.Worksheets.add(after:=Application.ActiveWorkbook.ActiveSheet)
+    
+    If Not WorksheetExists("sample") Then
+        NewWs.name = "Sample"
+    End If
+    
+    ' Try to copy range over
+    Worksheets(CurrentWSName).rng.CurrentRegion.Copy NewWs
+    
+    'NewWs.range("a5").Formula = rngCurrentRegion
+    
 
 End Sub
 
@@ -67,4 +91,9 @@ Exit Function
 IsInArrayError:
 On Error GoTo 0
 IsInArray = False
+End Function
+
+Function WorksheetExists(sName As String) As Boolean
+On Error Resume Next ''shouldn't need but just in case
+    WorksheetExists = Evaluate("ISREF('" & sName & "'!A1)")
 End Function
