@@ -1,8 +1,10 @@
 Option Explicit
 Sub RandomSample()
-
+'Application.ScreenUpdating = False
+Application.EnableEvents = False
 MakeArray
-
+'Application.ScreenUpdating = True
+Application.EnableEvents = True
 End Sub
 
 Sub MakeArray()
@@ -17,8 +19,9 @@ Application.EnableEvents = False
     Dim PasteCell As String
     PasteCell = "b3"
     CurrentWSName = Application.ActiveSheet.name
-    
-
+    Dim DeleteExtraneous As Integer
+    Dim InitLastCel As range
+    Dim InitLastCol As range
     'Get User Input
     Dim form As New SelectionParams
     Dim rng As range
@@ -64,17 +67,39 @@ retry:
     rngCurrentRegion.Copy NewWs.range(PasteCell)
 
     '' Mark those selected
+    Set InitLastCel = range(PasteCell).End(xlToRight)
+ 
+    With InitLastCel.Offset(-1, 1)
+        .Value = "Selection"
+        .Font.Bold = True
+    End With
+    
     Dim instance As Variant
-    range(PasteCell).End(xlToRight).Offset(-1, 1).Value = "Selection"
     For Each instance In MyArray
-        With range(PasteCell).End(xlToRight).Offset(instance - 1, 1)
+        With InitLastCel.Offset(instance - 1, 1)
         .Value = "x"
         .Interior.ColorIndex = 35
         End With
     Next
 
-    
+    ' 6 is yes, 7 is no
+    DeleteExtraneous = MsgBox("Sample table created succesfully. Delete all extraneous rows?", vbYesNo)
+    If DeleteExtraneous = 6 Then
+        'get used column to iterate through
+        Dim cell As range
+        Set InitLastCol = range(InitLastCel.Address & ":" & InitLastCel.End(xlDown).Address)
+restart:
+        'InitLastCol = range(InitLastCel.Address & ":" & InitLastCel.End(xlDown).Address)
+        For Each cell In InitLastCol
+            If cell.Offset(0, 1).Value <> "x" Then
+                cell.EntireRow.Delete
+                ' to manage changed range problems
+                GoTo restart
+            End If
+        Next
+    End If
 
+MsgBox ("Tada")
 End Sub
 ' Gets random integer between low and high values
 Function RndBetween(Low, High) As Integer
