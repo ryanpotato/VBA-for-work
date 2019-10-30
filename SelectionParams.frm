@@ -14,9 +14,15 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
+Private Sub bHeader_Click()
+
+End Sub
+
 Private Sub cancel_Click()
     Hide
     m_Cancelled = True
+    Unload Me
+    End
 End Sub
 
 Private Sub RefEdit1_BeforeDragOver(cancel As Boolean, ByVal Data As MSForms.DataObject, ByVal x As stdole.OLE_XPOS_CONTAINER, ByVal y As stdole.OLE_YPOS_CONTAINER, ByVal DragState As MSForms.fmDragState, Effect As MSForms.fmDropEffect, ByVal Shift As Integer)
@@ -28,7 +34,14 @@ Private Sub Rng_BeforeDragOver(cancel As Boolean, ByVal Data As MSForms.DataObje
 
 End Sub
 
-Private Sub Label4_Click()
+
+
+
+Private Sub TextBox1_Change()
+
+End Sub
+
+Private Sub ListBox1_Click()
 
 End Sub
 
@@ -42,21 +55,17 @@ Private Sub userform_Initialize()
   Me.Left = Application.Left + (0.5 * Application.Width) - (0.5 * Me.Width)
   Me.Top = Application.Top + (0.5 * Application.Height) - (0.5 * Me.Height)
   CurrentRegionGetter.SetFocus
+  bHeader.Value = True
 
 End Sub
 
-Private Sub Label1_Click()
 
-End Sub
 
 Private Sub run_Click()
 Hide
 End Sub
 
-Private Sub TextBox1_Change()
 
-End Sub
-
-Private Sub UserForm_Click()
-
+Private Sub UserForm_QueryClose(cancel As Integer, CloseMode As Integer)
+End
 End Sub
