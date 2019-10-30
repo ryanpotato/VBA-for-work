@@ -14,6 +14,8 @@ Application.EnableEvents = False
     Dim rngCurrentRegion As range
     Dim NewWs As Worksheet
     Dim CurrentWSName As String
+    Dim PasteCell As String
+    PasteCell = "b3"
     CurrentWSName = Application.ActiveSheet.name
     
 
@@ -45,30 +47,36 @@ retry:
         MyArray(i) = TryRand
     Next
     
+    
+    
+    '' TMP Debug XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     MsgBox ("the row count is " & RowCount & " and the sample size is " & Quantity)
+    '' TMP Debug XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     
-    '' we got the user input, and we made the array of random numbers
-    '' they are not ordered. For our purposes, that doesn't matter, even for optimization I think.
-    '' can they be ordered? I'm sure with more code. Which brings us to the TODOs.
     
-    '' TODO
-    '' Copy worksheet or at least used area or used array
+    
+    '' Paste current region of range to new worksheet
     Set rngCurrentRegion = rng.CurrentRegion
     Set NewWs = Application.ActiveWorkbook.Worksheets.add(after:=Application.ActiveWorkbook.ActiveSheet)
-    
     If Not WorksheetExists("sample") Then
         NewWs.name = "Sample"
     End If
-    
-    ' Try to copy range over
-    Worksheets(CurrentWSName).rng.CurrentRegion.Copy NewWs
-    
-    'NewWs.range("a5").Formula = rngCurrentRegion
+    rngCurrentRegion.Copy NewWs.range(PasteCell)
+
+    '' Mark those selected
+    Dim instance As Variant
+    range(PasteCell).End(xlToRight).Offset(-1, 1).Value = "Selection"
+    For Each instance In MyArray
+        With range(PasteCell).End(xlToRight).Offset(instance - 1, 1)
+        .Value = "x"
+        .Interior.ColorIndex = 35
+        End With
+    Next
+
     
 
 End Sub
-
-
+' Gets random integer between low and high values
 Function RndBetween(Low, High) As Integer
    Randomize
    RndBetween = Int((High - Low + 1) * Rnd + Low)
