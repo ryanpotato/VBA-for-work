@@ -28,6 +28,10 @@ Private Sub Rng_BeforeDragOver(cancel As Boolean, ByVal Data As MSForms.DataObje
 
 End Sub
 
+Private Sub Label4_Click()
+
+End Sub
+
 Private Sub userform_Initialize()
 
 'PURPOSE: Position userform to center of Excel Window (important for dual monitor compatibility)
@@ -37,6 +41,7 @@ Private Sub userform_Initialize()
   Me.StartUpPosition = 0
   Me.Left = Application.Left + (0.5 * Application.Width) - (0.5 * Me.Width)
   Me.Top = Application.Top + (0.5 * Application.Height) - (0.5 * Me.Height)
+  CurrentRegionGetter.SetFocus
 
 End Sub
 
