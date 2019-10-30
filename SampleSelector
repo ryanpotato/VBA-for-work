@@ -25,16 +25,31 @@ Application.EnableEvents = False
     'Get User Input
     Dim form As New SelectionParams
     Dim rng As range
-  '  Set rng = range("a1")
+    Dim ChosenRegion As range
+    Dim chosenregiontxt As String
     Dim Quantity As Integer
     
 RequestInput:
+
     form.Show vbModal
+    If form.range.text <> "" Then
     Set rng = range(form.range.text)
+    End If
+
+    If form.CurrentRegionGetter.text <> "" Then
+        Set ChosenRegion = range(form.CurrentRegionGetter.text).CurrentRegion
+    End If
     Quantity = form.SampleSize
     
     ' process user input
-    RowCount = rng.rows.count
+    If form.CurrentRegionGetter.text <> "" Then
+        RowCount = ChosenRegion.rows.count
+    ElseIf form.range.text <> "" Then
+        RowCount = rng.rows.count
+    Else
+        MsgBox ("Select either custom range or cell in table")
+        GoTo RequestInput
+    End If
     If Quantity >= RowCount Then
         MsgBox ("Choose selection size that's smaller than row count")
         GoTo RequestInput
@@ -59,7 +74,16 @@ retry:
     
     
     '' Paste current region of range to new worksheet
-    Set rngCurrentRegion = rng.CurrentRegion
+
+    If form.CurrentRegionGetter.text <> "" Then
+        RowCount = ChosenRegion.rows.count
+        Set rngCurrentRegion = ChosenRegion.CurrentRegion
+    Else
+        RowCount = rng.rows.count
+        Set rngCurrentRegion = rng.CurrentRegion
+    End If
+
+
     Set NewWs = Application.ActiveWorkbook.Worksheets.add(after:=Application.ActiveWorkbook.ActiveSheet)
     If Not WorksheetExists("sample") Then
         NewWs.name = "Sample"
